@@ -47,7 +47,6 @@ class ServiceProxyAbstractFactoryFactoryTest extends PHPUnit_Framework_TestCase
         $sm->setService('test_cache', new Memory());
         $proxyFactory = $factory->createService($sm);
 
-
         $this->assertInstanceOf('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyFactory);
         // verifying generator
         $proxyClass = $proxyFactory->getProxyGenerator()->getProxyClassName('TestClass');

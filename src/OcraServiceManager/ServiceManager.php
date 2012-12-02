@@ -128,7 +128,7 @@ class ServiceManager extends BaseServiceManager
      *
      * @see    \Zend\ServiceManager\ServiceManager::create
      *
-     * @param  string|array $name
+     * @param  string|array   $name
      * @return object|boolean
      */
     public function createRealService($name)
