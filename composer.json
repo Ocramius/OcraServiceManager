@@ -19,11 +19,18 @@
     "require": {
         "zendframework/zend-mvc": "2.*",
         "zendframework/zend-servicemanager": "2.*",
-        "zendframework/zend-modulemanager": "2.*"
+        "zendframework/zend-modulemanager": "2.*",
+        "doctrine/common": "dev-DCOM-96"
     },
     "autoload": {
         "psr-0": {
             "OcraServiceManager\\": "src"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "http://github.com/Ocramius/common.git"
+        }
+    ]
 }
