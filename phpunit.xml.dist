@@ -12,7 +12,7 @@
     syntaxCheck="true"
 >
     <testsuite name="OcraServiceManager tests">
-        <directory>./tests/OcraCachedViewResolverTest</directory>
+        <directory>./tests/OcraServiceManagerTest</directory>
     </testsuite>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
