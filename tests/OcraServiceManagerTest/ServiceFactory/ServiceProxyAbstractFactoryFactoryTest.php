@@ -20,6 +20,7 @@ namespace OcraServiceManagerTest\ServiceFactory;
 
 use OcraServiceManager\ServiceFactory\ServiceProxyAbstractFactoryFactory;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Cache\Storage\Adapter\Memory;
 
 use PHPUnit_Framework_TestCase;
 
@@ -37,9 +38,13 @@ class ServiceProxyAbstractFactoryFactoryTest extends PHPUnit_Framework_TestCase
         $factory = new ServiceProxyAbstractFactoryFactory();
         $sm = new ServiceManager();
         $sm->setService('Config', array(
-            'service_proxies_dir' => __DIR__,
-            'service_proxies_ns'  => 'TestNs',
+            'ocra_service_manager' => array(
+                'service_proxies_dir'        => __DIR__,
+                'service_proxies_namespace'  => 'TestNs',
+                'service_proxies_cache'      => 'test_cache',
+            ),
         ));
+        $sm->setService('test_cache', new Memory());
         $proxyFactory = $factory->createService($sm);
 
 

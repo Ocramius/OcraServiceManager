@@ -29,7 +29,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  */
 class ServiceProxyGenerator extends ProxyGenerator
 {
-    const DEFAULT_SERVICE_PROXY_NS = 'Zend\\ServiceManager\\Proxy';
+    const DEFAULT_SERVICE_PROXY_NS = 'OcraServiceManagerProxy\\Proxy';
 
     /**
      * {@inheritDoc}

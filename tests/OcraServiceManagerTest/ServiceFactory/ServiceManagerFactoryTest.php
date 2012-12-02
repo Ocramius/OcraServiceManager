@@ -37,6 +37,29 @@ class ServiceManagerFactoryTest extends PHPUnit_Framework_TestCase
         $factory        = new ServiceManagerFactory();
         $serviceManager = new ServiceManager();
 
-        $serviceManager->setService('OcraServiceManager\\ServiceManager', $factory->createService($serviceManager));
+        $serviceManager->setService(
+            'Config',
+            array(
+                'service_manager' => array(
+                    'lazy_services' => array(
+                        'first-service',
+                        'second-service',
+                        'third-service' => 'with-factory',
+                    ),
+                ),
+            )
+        );
+
+        /* @var $service \OcraServiceManager\ServiceManager */
+        $service = $factory->createService($serviceManager);
+
+        $this->assertInstanceOf('OcraServiceManager\\ServiceManager', $service);
+
+        $proxyServices = $service->getProxyServices();
+
+        $this->assertCount(3, $proxyServices);
+        $this->assertFalse($proxyServices['firstservice']);
+        $this->assertFalse($proxyServices['secondservice']);
+        $this->assertSame('with-factory', $proxyServices['thirdservice']);
     }
 }

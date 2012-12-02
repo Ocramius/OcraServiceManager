@@ -21,6 +21,8 @@ namespace OcraServiceManager;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
+use OcraServiceManager\Proxy\ServiceProxyGenerator;
+
 /**
  * OcraServiceManager module
  *
@@ -38,6 +40,14 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface
             'service_manager' => array(
                 'lazy_services' => array(),
             ),
+            'ocra_service_manager' => array(
+                'service_proxies_namespace' => ServiceProxyGenerator::DEFAULT_SERVICE_PROXY_NS,
+                'service_proxies_dir'       => getcwd() . '/data/service-proxies',
+                'service_proxies_cache'     => 'OcraServiceManager\\Cache\\ServiceProxyCache',
+                'cache'                     => array(
+                    'adapter' => 'memory',
+                ),
+            ),
         );
     }
 
@@ -48,10 +58,10 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'Application'                        => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
+                'Application' => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
                 'OcraServiceManager\\ServiceManager' => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
+                'OcraServiceManager\\Cache\\ServiceProxyCache' => 'OcraServiceManager\\ServiceFactory\\CacheFactory'
             ),
-            'aliases' => array(),
         );
     }
 }

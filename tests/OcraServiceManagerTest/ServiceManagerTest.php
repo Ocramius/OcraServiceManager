@@ -21,6 +21,8 @@ namespace OcraServiceManagerTest;
 use OcraServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManager as BaseServiceManager;
 use PHPUnit_Framework_TestCase;
+use Zend\Cache\Storage\Adapter\Memory;
+use OcraServiceManager\Proxy\ServiceProxyAbstractFactory;
 
 /**
  * @author  Marco Pivetta <ocramius@gmail.com>
@@ -72,21 +74,22 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testProxiedLazyService()
     {
-        $this->serviceManager->setFactory(
+        $this->serviceManager->setService(
             'OcraServiceManager\Proxy\ServiceProxyAbstractFactory',
-            'OcraServiceManager\ServiceFactory\ServiceProxyAbstractFactoryFactory'
+            new ServiceProxyAbstractFactory(new Memory())
         );
         $service = $this->getMock('stdClass', array('proxiedMethod'));
-        $service->expects($this->once())->method('proxiedMethod');
+        $service->expects($this->once())->method('proxiedMethod')->will($this->returnValue('proxiedValue'));
 
         $this->serviceManager->setService('Config', array());
+        $this->serviceManager->setService('OcraServiceManager\\Cache\\ServiceProxiesCache', new Memory());
         $this->serviceManager->setFactory('LazyService', function () use ($service) { return $service; });
         $this->serviceManager->setProxyService('LazyService');
         $lazyService = $this->serviceManager->create('LazyService');
 
         $this->assertInstanceOf(get_class($service), $lazyService);
         $this->assertNotSame($service, $lazyService);
-        $lazyService->proxiedMethod();
+        $this->assertSame('proxiedValue', $lazyService->proxiedMethod());
     }
 
     /**
@@ -101,7 +104,7 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
 
         $this->serviceManager->setService('default-proxy-factory', $proxyFactory);
 
-        $service = $this->getMock('stdClass', array('proxiedMethod'));
+        $service = $this->getMock('stdClass');
 
         $proxyFactory
             ->expects($this->once())

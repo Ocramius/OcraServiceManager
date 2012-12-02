@@ -18,39 +18,26 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use OcraServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Cache\StorageFactory;
 
 /**
- * Factory responsible of building an {@see OcraServiceManager\ServiceManager}
+ * Factory responsible of building a {@see \Zend\Cache\Storage\StorageInterface}
+ * based on OcraServiceManager config
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class ServiceManagerFactory implements FactoryInterface
+class CacheFactory implements FactoryInterface
 {
     /**
-     * Create an overloaded service manager
-     *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return ServiceManager
+     * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-        $serviceManager = new ServiceManager($serviceLocator);
+        $config = $serviceLocator->get('Config');
 
-        $config = $serviceManager->get('Config');
-
-        foreach ($config['service_manager']['lazy_services'] as $lazyService => $factory) {
-            if (is_int($lazyService)) {
-                $serviceManager->setProxyService($factory);
-            } else {
-                $serviceManager->setProxyService($lazyService, $factory);
-            }
-        }
-
-        return $serviceManager;
+        return StorageFactory::factory($config['ocra_service_manager']['cache']);
     }
 }

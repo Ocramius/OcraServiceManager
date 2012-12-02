@@ -26,8 +26,6 @@ use Zend\ServiceManager\FactoryInterface;
 
 use Doctrine\Common\Proxy\Autoloader as ProxyAutoloader;
 
-use Zend\Cache\Storage\Adapter\Memory;
-
 /**
  * Service factory responsible of building a ServiceProxyAbstractFactory
  *
@@ -44,12 +42,11 @@ class ServiceProxyAbstractFactoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config         = $serviceLocator->get('Config');
-        $proxyDir       = isset($config['service_proxies_dir']) ? $config['service_proxies_dir'] : sys_get_temp_dir();
-        $proxyNamespace = isset($config['service_proxies_ns'])
-            ? $config['service_proxies_ns'] : ServiceProxyGenerator::DEFAULT_SERVICE_PROXY_NS;
+        $proxyDir       = $config['ocra_service_manager']['service_proxies_dir'];
+        $proxyNamespace = $config['ocra_service_manager']['service_proxies_namespace'];
         $autoloader     = new ProxyAutoloader();
-        $cache          = isset($config['service_proxies_cache'])
-            ? $serviceLocator->get($config['service_proxies_cache']) : new Memory();
+        /* @var $cache \Zend\Cache\Storage\StorageInterface */
+        $cache          = $serviceLocator->get($config['ocra_service_manager']['service_proxies_cache']);
         $factory        = new ServiceProxyAbstractFactory($cache);
 
         $factory->setProxyGenerator(new ServiceProxyGenerator($proxyDir, $proxyNamespace));
