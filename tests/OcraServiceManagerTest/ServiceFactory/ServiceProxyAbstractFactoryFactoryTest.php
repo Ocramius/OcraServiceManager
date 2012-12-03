@@ -47,12 +47,21 @@ class ServiceProxyAbstractFactoryFactoryTest extends PHPUnit_Framework_TestCase
         $sm->setService('test_cache', new Memory());
         $proxyFactory = $factory->createService($sm);
 
-        $this->assertInstanceOf('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyFactory);
+        $this->assertInstanceOf(
+            'OcraServiceManager\Proxy\ServiceProxyAbstractFactory',
+            $proxyFactory
+        );
+
+        $proxyGenerator = $proxyFactory->getProxyGenerator();
+
         // verifying generator
-        $proxyClass = $proxyFactory->getProxyGenerator()->getProxyClassName('TestClass');
+        $proxyClass = $proxyGenerator->getProxyClassName('TestClass');
         $this->assertSame('TestNs\__CG__\TestClass', $proxyClass);
-        $proxyFile = $proxyFactory->getProxyGenerator()->getProxyFileName('TestClass');
-        $this->assertSame(__DIR__ . '/__CG__TestClass.php', $proxyFile);
+        $proxyFile = $proxyGenerator->getProxyFileName('TestClass');
+        $this->assertSame(
+            __DIR__ . DIRECTORY_SEPARATOR . '__CG__TestClass.php',
+            $proxyFile
+        );
 
         // cleaning up
         $autoloaders = spl_autoload_functions();

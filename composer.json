@@ -20,7 +20,7 @@
         "zendframework/zend-mvc": "2.*",
         "zendframework/zend-servicemanager": "2.*",
         "zendframework/zend-modulemanager": "2.*",
-        "doctrine/common": "dev-DCOM-96"
+        "doctrine/common": "dev-DCOM-96 as dev-master"
     },
     "autoload": {
         "psr-0": {

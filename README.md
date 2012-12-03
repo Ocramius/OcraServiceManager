@@ -20,9 +20,23 @@ The recommended way to install
 php composer.phar require ocramius/ocra-service-manager
 ```
 
-When asked for a version to install, type `*`.
+When asked for a version to install, type `dev-master`.
 You can then enable it in your `config/application.config.php` by adding
 `OcraServiceManager` to your modules.
+
+You will also need to include following in your `composer.json` until doctrine/common
+2.4 reaches stability:
+
+```json
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "http://github.com/Ocramius/common.git"
+        }
+    ]
+```
+
 
 ## Configuration
 

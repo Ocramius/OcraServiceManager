@@ -60,7 +60,9 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface
             'factories' => array(
                 'Application' => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
                 'OcraServiceManager\\ServiceManager' => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
-                'OcraServiceManager\\Cache\\ServiceProxyCache' => 'OcraServiceManager\\ServiceFactory\\CacheFactory'
+                'OcraServiceManager\\Cache\\ServiceProxyCache' => 'OcraServiceManager\\ServiceFactory\\CacheFactory',
+                'OcraServiceManager\Proxy\ServiceProxyAbstractFactory' =>
+                    'OcraServiceManager\\ServiceFactory\\ServiceProxyAbstractFactoryFactory'
             ),
         );
     }

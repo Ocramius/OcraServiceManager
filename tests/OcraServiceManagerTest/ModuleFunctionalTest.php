@@ -41,7 +41,9 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
             array(
                 'modules'                 => array('OcraServiceManager'),
                 'module_listener_options' => array(
-                    'config_glob_paths' => array(),
+                    'config_glob_paths' => array(
+                        __DIR__ . '/../testing.config.php',
+                    ),
                 ),
             )
         );
@@ -52,15 +54,30 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
 
         /* @var $application \Zend\Mvc\Application */
         $application        = $serviceManager->get('Application');
+        /* @var $ocraServiceManager \OcraServiceManager\ServiceManager */
         $ocraServiceManager = $serviceManager->get('ServiceManager');
 
-        $this->assertInstanceOf('OcraServiceManager\\ServiceManager', $ocraServiceManager);
-        $this->assertSame($application->getServiceManager(), $ocraServiceManager);
+        $this->assertInstanceOf(
+            'OcraServiceManager\\ServiceManager',
+            $ocraServiceManager,
+            'ServiceManager is an OcraServiceManager\\ServiceManager'
+        );
+
+        $this->assertSame(
+            $application->getServiceManager(),
+            $ocraServiceManager,
+            'The application service manager was replaced'
+        );
+        $this->assertInstanceOf(
+            'Doctrine\\Common\\Proxy\\Proxy',
+            $ocraServiceManager->get('EventManager'),
+            'EventManager is a generated proxy'
+        );
         $this->assertInstanceOf(
             'Zend\\Cache\\Storage\\StorageInterface',
-            $ocraServiceManager->get('OcraServiceManager\\Cache\\ServiceProxyCache')
+            $ocraServiceManager->get(
+                'OcraServiceManager\\Cache\\ServiceProxyCache'
+            )
         );
-        $this->assertSame($application->getServiceManager(), $ocraServiceManager);
-
     }
 }
