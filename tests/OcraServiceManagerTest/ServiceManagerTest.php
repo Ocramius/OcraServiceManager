@@ -63,7 +63,7 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
         $proxied = $this->serviceManager->getProxyServices();
 
         $this->assertCount(2, $proxied);
-        $this->assertSame(false, $proxied['firstservice']);
+        $this->assertSame('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxied['firstservice']);
         $this->assertSame('assigned-factory', $proxied['secondservice']);
     }
 

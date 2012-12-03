@@ -16,10 +16,21 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'ocra_service_manager' => array(
-        'cache' => array(
-            'adapter' => 'memory',
-        ),
-    ),
-);
+namespace OcraServiceManagerTest\TestAsset;
+
+/**
+ * Simple object used to measure performance of operations with proxies
+ *
+ * @author   Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
+ */
+class HelloWorld
+{
+    /**
+     * @return string
+     */
+    public function sayHello()
+    {
+        return 'Hello World!';
+    }
+}

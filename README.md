@@ -67,9 +67,16 @@ cd path/to/ocra-service-manager
 phpunit
 ```
 
+## Contributing
+
+Please consider that any pull requests will be accepted only if:
+
+ * code coverage on newly introduced code is >= 90%
+ * the performance impact is acceptable (please run the performance test suite and attach
+   its report to the pull request itself)
+
 ## Known limitations:
 
  * Currently only replaces only the main `service_manager` of your application.
  * Service proxies are useless if you initialize them via service initializers, since any call
    to a method of the proxy itself will initialize it.
-

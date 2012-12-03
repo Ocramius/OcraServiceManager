@@ -58,8 +58,8 @@ class ServiceManagerFactoryTest extends PHPUnit_Framework_TestCase
         $proxyServices = $service->getProxyServices();
 
         $this->assertCount(3, $proxyServices);
-        $this->assertFalse($proxyServices['firstservice']);
-        $this->assertFalse($proxyServices['secondservice']);
+        $this->assertSame('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyServices['firstservice']);
+        $this->assertSame('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyServices['secondservice']);
         $this->assertSame('with-factory', $proxyServices['thirdservice']);
     }
 }

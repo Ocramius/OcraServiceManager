@@ -40,11 +40,17 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
     protected $factory;
 
     /**
+     * @var Memory
+     */
+    protected $cache;
+
+    /**
      * {@inheritDoc}
      */
     public function setUp()
     {
-        $this->factory = new ServiceProxyAbstractFactory(new Memory());
+        $this->cache   = new Memory();
+        $this->factory = new ServiceProxyAbstractFactory($this->cache);
     }
 
     /**
@@ -61,6 +67,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testCreateServiceWithNameFetchesServiceOnlyWhenProxyDefinitionIsUnknown()
@@ -91,6 +98,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testCanCreateServiceWithNameProducesLazyLoadingService()
@@ -121,6 +129,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testProxyInitializationReferencesOriginalService()
@@ -143,6 +152,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testProxyGenerationProducesInitializedProxyAtFirstRun()
@@ -176,6 +186,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testCloneInitializedService()
@@ -211,6 +222,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testCloneUninitializedService()
@@ -243,6 +255,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testProxyMagicGetterSetterIssetter()
@@ -279,6 +292,7 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
      * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
      */
     public function testSerializeUninitializedProxy()
@@ -310,5 +324,32 @@ class ServiceProxyAbstractFactoryTest extends PHPUnit_Framework_TestCase
 
         $unserialized->checkedProperty = 'serializedProxyChangedValue';
         $this->assertSame('againChangedValue', $lazyService->checkedProperty);
+    }
+
+    /**
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::createServiceWithName
+     * @covers \OcraServiceManager\Proxy\ServiceProxyAbstractFactory::generateProxyDefinitions
+     * @covers \OcraServiceManager\Proxy\ServiceProxyGenerator
+     */
+    public function testCachedServiceProxyName()
+    {
+        $lazyService = new PublicPropertiesLazyService();
+        $lazyService->checkedProperty = 'serializedValue';
+
+        $sm = $this->getMock('OcraServiceManager\ServiceManager', array(), array(), '', false);
+        $sm
+            ->expects($this->any())
+            ->method('createRealService')
+            ->with(array('lazy-service', 'lazy-service'))
+            ->will($this->returnValue($lazyService));
+
+        // first code generation - required to avoid fetching an initialized proxy
+        $this->factory->createServiceWithName($sm, 'lazy-service', 'lazy-service');
+
+        // cache is now filled, let's re-use it and verify that the proxy is not initialized
+
+        $factory = new ServiceProxyAbstractFactory($this->cache);
+        $proxy = $factory->createServiceWithName($sm, 'lazy-service', 'lazy-service');
+        $this->assertFalse($proxy->__isInitialized());
     }
 }

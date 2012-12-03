@@ -42,10 +42,18 @@ class ServiceProxyAbstractFactory implements AbstractFactoryInterface
     private $proxyGenerator;
 
     /**
+     * @var array
+     */
+    private $locatedProxies = array();
+
+    /**
      * @var StorageInterface used to store the proxy definitions
      */
     private $cache;
 
+    /**
+     * @param StorageInterface $cache
+     */
     public function __construct(StorageInterface $cache)
     {
         $this->cache = $cache;
@@ -60,32 +68,20 @@ class ServiceProxyAbstractFactory implements AbstractFactoryInterface
     {
         /* @var $serviceLocator ServiceManager */
 
-        // FQCN is cached since we don't know anything about the requested service, and want to avoid instantiation
-        if (( ! $fqcn = $this->cache->getItem($requestedName)) || ! class_exists($fqcn)) {
-            $service        = $serviceLocator->createRealService(array($serviceName, $requestedName));
-            $className      = get_class($service);
-            $proxyGenerator = $this->getProxyGenerator();
-            $fqcn           = $proxyGenerator->getProxyClassName($className);
+        if (isset($this->locatedProxies[$requestedName]) && class_exists($this->locatedProxies[$requestedName])) {
+            $fqcn = $this->locatedProxies[$requestedName];
 
-            $proxyGenerator->generateProxyClass(new ServiceClassMetadata($className));
-            require_once $proxyGenerator->getProxyFileName($className);
-
-            $proxy = new $fqcn(null, null);
-            $proxy->__wrappedObject__ = $service;
-            $proxy->__setInitialized(true);
-            $this->cache->setItem($requestedName, $fqcn);
-
-            return $proxy;
+            return new $fqcn(
+                function (Proxy $proxy) use ($serviceLocator, $serviceName, $requestedName) {
+                    $proxy->__setInitializer(null);
+                    $proxy->__setInitialized(true);
+                    $proxy->__wrappedObject__ = $serviceLocator->createRealService(array($serviceName, $requestedName));
+                },
+                null
+            );
         }
 
-        return new $fqcn(
-            function (Proxy $proxy) use ($serviceLocator, $serviceName, $requestedName) {
-                $proxy->__setInitializer(null);
-                $proxy->__setInitialized(true);
-                $proxy->__wrappedObject__ = $serviceLocator->createRealService(array($serviceName, $requestedName));
-            },
-            null
-        );
+        return $this->generateProxyDefinitions($serviceLocator, $serviceName, $requestedName);
     }
 
     /**
@@ -114,5 +110,40 @@ class ServiceProxyAbstractFactory implements AbstractFactoryInterface
         }
 
         return $this->proxyGenerator;
+    }
+
+    /**
+     * Compute definitions for the requested proxy item
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param $serviceName
+     * @param $requestedName
+     *
+     * @return Proxy|object
+     */
+    protected function generateProxyDefinitions(ServiceLocatorInterface $serviceLocator, $serviceName, $requestedName)
+    {
+        // FQCN is cached since we don't know anything about the requested service, and want to avoid instantiation
+        if (($fqcn = $this->cache->getItem($requestedName)) && class_exists($fqcn)) {
+            $this->locatedProxies[$requestedName] = $fqcn;
+
+            return $this->createServiceWithName($serviceLocator, $serviceName, $requestedName);
+        } else {
+            $service        = $serviceLocator->createRealService(array($serviceName, $requestedName));
+            $className      = get_class($service);
+            $proxyGenerator = $this->getProxyGenerator();
+            $fqcn           = $proxyGenerator->getProxyClassName($className);
+
+            $proxyGenerator->generateProxyClass(new ServiceClassMetadata($className));
+            require_once $proxyGenerator->getProxyFileName($className);
+
+            $this->locatedProxies[$requestedName] = $fqcn;
+            $proxy = new $fqcn(null, null);
+            $proxy->__wrappedObject__ = $service;
+            $proxy->__setInitialized(true);
+            $this->cache->setItem($requestedName, $fqcn);
+
+            return $proxy;
+        }
     }
 }

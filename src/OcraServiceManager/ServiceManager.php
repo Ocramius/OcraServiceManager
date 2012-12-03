@@ -33,8 +33,7 @@ class ServiceManager extends BaseServiceManager
     /**
      * Services to be proxied through a proxy factory, with keys being
      * the service names, and values being the service name of the proxy
-     * factory responsible of instantiating them (false if default
-     * proxy factory has to be used)
+     * factory responsible of instantiating them
      *
      * @var array
      */
@@ -87,7 +86,7 @@ class ServiceManager extends BaseServiceManager
      */
     public function setProxyService($serviceName, $proxyFactory = null)
     {
-        $this->proxyServices[$this->canonicalizeName($serviceName)] = $proxyFactory ? $proxyFactory : false;
+        $this->proxyServices[$this->canonicalizeName($serviceName)] = $proxyFactory ? $proxyFactory : $this->defaultProxyFactory;
     }
 
     /**
@@ -113,14 +112,10 @@ class ServiceManager extends BaseServiceManager
         }
 
         if (isset($this->proxyServices[$cName])) {
-            $factory      = $this->proxyServices[$cName] ? $this->proxyServices[$cName] : $this->defaultProxyFactory;
-            /* @var $proxyFactory \Zend\ServiceManager\AbstractFactoryInterface */
-            $proxyFactory = $this->get($factory);
-
-            return $proxyFactory->createServiceWithName($this, $cName, $rName);
+            return $this->get($this->proxyServices[$cName])->createServiceWithName($this, $cName, $rName);
         }
 
-        return parent::create($name);
+        return parent::create(array($cName, $rName));
     }
 
     /**
