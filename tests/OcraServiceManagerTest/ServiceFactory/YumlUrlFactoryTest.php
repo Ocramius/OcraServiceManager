@@ -35,7 +35,6 @@ class YumlUrlFactoryTest extends PHPUnit_Framework_TestCase
         $factory        = new YumlUrlFactory();
         $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
 
-
         $this->assertInstanceOf('OcraServiceManager\\View\\Helper\\YumlUrl', $factory->createService($serviceLocator));
     }
 }

@@ -21,10 +21,6 @@ namespace OcraServiceManager;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\EventManager\EventInterface;
-
-use Zend\Mvc\ApplicationInterface;
 
 /**
  * OcraServiceManager module

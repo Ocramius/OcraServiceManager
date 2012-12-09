@@ -35,7 +35,6 @@ class ZDTCollectorFactoryTest extends PHPUnit_Framework_TestCase
         $factory        = new ZDTCollectorFactory();
         $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
 
-
         $this->assertInstanceOf(
             'OcraServiceManager\\ServiceManager\\ZDTCollector',
             $factory->createService($serviceLocator)
