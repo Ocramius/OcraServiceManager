@@ -157,7 +157,6 @@ class LoggedServiceManager extends BaseServiceManager
      */
     public function getDependencies($service)
     {
-        // @todo not yet working - should depend on "getDepending"
         $cName = $this->canonicalizeName($service);
 
         // if no service was discovered, try fetching it to trigger logging
@@ -265,7 +264,22 @@ class LoggedServiceManager extends BaseServiceManager
         $loggedServices = array();
 
         foreach (array_keys($this->serviceHashes) as $cName) {
-            $loggedServices[$cName] = array();
+            $oids = array_keys($this->serviceHashes[$cName]);
+            $accesses = 0;
+
+            foreach ($oids as $oid) {
+                if (isset($this->getTraces[$oid])) {
+                    $accesses += count($this->getTraces[$oid]);
+                }
+            }
+
+            $loggedServices[$cName] = array(
+                'names'        => array_unique($this->serviceHashes[$cName]),
+                'dependencies' => $this->getDependencies($cName),
+                'depending'    => $this->getDepending($cName),
+                'accesses'     => $accesses,
+                'instances'    => count($oids),
+            );
         }
 
         return $loggedServices;

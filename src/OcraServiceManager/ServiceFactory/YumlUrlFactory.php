@@ -16,49 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManager;
+namespace OcraServiceManager\ServiceFactory;
 
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\EventManager\EventInterface;
-
-use Zend\Mvc\ApplicationInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use OcraServiceManager\View\Helper\YumlUrl;
+use Zend\Escaper\Escaper;
 
 /**
- * OcraServiceManager module
+ * Factory responsible of building a {@see \OcraServiceManager\View\Helper\YumlUrl}
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
+class YumlUrlFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function getConfig()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return require __DIR__ . '/../../config/module.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getServiceConfig()
-    {
-        return require __DIR__ . '/../../config/services.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'yumlUrl' => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-            ),
-        );
+        return new YumlUrl(new Escaper());
     }
 }

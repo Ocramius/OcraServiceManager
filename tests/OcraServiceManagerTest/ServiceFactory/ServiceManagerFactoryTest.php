@@ -40,6 +40,9 @@ class ServiceManagerFactoryTest extends PHPUnit_Framework_TestCase
         $serviceManager->setService(
             'Config',
             array(
+                'ocra_service_manager' => array(
+                    'logged_service_manager' => false,
+                ),
                 'service_manager' => array(
                     'lazy_services' => array(
                         'first-service',

@@ -16,49 +16,51 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManager;
+namespace OcraServiceManager\View\Helper;
 
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\EventManager\EventInterface;
-
-use Zend\Mvc\ApplicationInterface;
+use Zend\View\Helper\AbstractHelper;
+use Zend\Escaper\Escaper;
 
 /**
- * OcraServiceManager module
+ * Helper used to generate YUML {@see http://http://yuml.me/} diagram links
+ * from a dependency tree
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
+class YumlUrl extends AbstractHelper
 {
     /**
-     * {@inheritDoc}
+     * @var Escaper
      */
-    public function getConfig()
+    protected $escaper;
+
+    /**
+     * @param Escaper $escaper
+     */
+    public function __construct(Escaper $escaper)
     {
-        return require __DIR__ . '/../../config/module.config.php';
+        $this->escaper = $escaper;
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves a YUML diagram link
+     *
+     * @param array $services services as produced by
+     *              {@see \OcraServiceManager\ServiceManager\LoggedServiceManager::getLoggedServices}
      */
-    public function getServiceConfig()
+    public function getUrl(array $services)
     {
-        return require __DIR__ . '/../../config/services.config.php';
-    }
+        $url = 'http://yuml.me/diagram/scruffy/class/';
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'yumlUrl' => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-            ),
-        );
+        $chunks = array();
+
+        foreach ($services as $serviceName => $details) {
+            foreach ($details['dependencies'] as $dependency) {
+                $chunks[] = $this->escaper->escapeUrl('[' . $serviceName . ']->[' . $dependency . ']');
+            }
+        }
+
+        return $url . implode(',', $chunks);
     }
 }

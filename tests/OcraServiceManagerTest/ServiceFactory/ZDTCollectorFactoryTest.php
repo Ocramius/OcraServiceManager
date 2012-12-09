@@ -16,49 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManager;
+namespace OcraServiceManagerTest\ServiceFactory;
 
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\EventManager\EventInterface;
-
-use Zend\Mvc\ApplicationInterface;
+use PHPUnit_Framework_TestCase;
+use OcraServiceManager\ServiceFactory\ZDTCollectorFactory;
 
 /**
- * OcraServiceManager module
- *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
+class ZDTCollectorFactoryTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * {@inheritDoc}
+     * @covers \OcraServiceManager\ServiceFactory\ZDTCollectorFactory::createService
      */
-    public function getConfig()
+    public function testCreateService()
     {
-        return require __DIR__ . '/../../config/module.config.php';
-    }
+        $factory        = new ZDTCollectorFactory();
+        $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getServiceConfig()
-    {
-        return require __DIR__ . '/../../config/services.config.php';
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'yumlUrl' => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-            ),
+        $this->assertInstanceOf(
+            'OcraServiceManager\\ServiceManager\\ZDTCollector',
+            $factory->createService($serviceLocator)
         );
     }
 }

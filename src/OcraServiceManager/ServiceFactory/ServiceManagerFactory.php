@@ -21,6 +21,7 @@ namespace OcraServiceManager\ServiceFactory;
 use OcraServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use OcraServiceManager\ServiceManager\LoggedServiceManager;
 
 /**
  * Factory responsible of building an {@see OcraServiceManager\ServiceManager}
@@ -38,10 +39,16 @@ class ServiceManagerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-        $serviceManager = new ServiceManager($serviceLocator);
 
-        $config = $serviceManager->get('Config');
+        $config = $serviceLocator->get('Config');
+
+        if ($config['ocra_service_manager']['logged_service_manager']) {
+            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
+            $serviceManager = new LoggedServiceManager($serviceLocator);
+        } else {
+            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
+            $serviceManager = new ServiceManager($serviceLocator);
+        }
 
         foreach ($config['service_manager']['lazy_services'] as $lazyService => $factory) {
             if (is_int($lazyService)) {

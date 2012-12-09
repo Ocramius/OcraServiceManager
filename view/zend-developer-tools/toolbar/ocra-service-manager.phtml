@@ -1,0 +1,111 @@
+<?php
+    /* @var $collector \OcraServiceManager\ServiceManager\ZDTCollector */
+    $collector = $this->collector;
+    $services  = $collector->getServices();
+?>
+<div class="zdt-toolbar-entry">
+    <?php if($collector->couldCollect()): ?>
+    <div class="zdt-toolbar-preview">
+        <img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAA0JJREFUOMudVEFoI1UY/t4kk2yUylZlFNuaDduw2A2IiCD0WgQPqVUsewgt6kXQXEpPnoqnii3tJeAacVdahNLSiyClttCSgdimCZWCuOykk5mNEtYsNGYmTCaZ934vWai4ibXf6f3vfXx8//++9xi6QNO0d0Oh0LoQouW67s1oNGrgApDOF4ZhfGea5hQAnJ2dRTjnPtd1n2o0Gi8BgGmaXxiG8WUvQfZ4USqV7vp8vg+EEGCMnTLGrneOCAAjIgPANQAQQnwSiUS+6uqwv79fSqVST3POCQCI6HogEIBt2+S6LvP5fCCia0QEy7L48vLyMxdp/4qqqm3DMEjXdZFMJu8DSEuStLqwsPDANE0yTZN2d3dNAL6eSsVi8X1N05K6rlO5XKbZ2dmfAQyco9xcXFy8XyqVSNd1R9O0j4rF4uSTtPydmawRESMiVKtVpFKpWwD+OMf7tVKpfFqv138KhUJBAN8QEQHYeKKgZVlMlmUWCAQgyzKazebvjLF/EKempiqSJEEIwZrNJjjn6OpwYmLie0VRXlhbW3srGAwin89/C+DD80TO+bIsy3Acx0skEj82Gg2rZ2wAYHt7mw8ODkpEBCL6mohuA5AZY58DeFuSJOi6Xo7H4y//Zw5PTk6WOOczjDF0WgOAdudGpcd7RNSWZfnjWCx2t9dLkVRVDQshUKvV2rlc7qFt24Jz7uecs1qtxo+Ojv50HIc3m03f1tbWiwBQKBQCvdITmZyc/CUej98G8NrMzMydg4MDoaoqjY2NfQbg9enp6d3x8fEdAFcBIJfL3Ts+Ppa6zhDAFQAyAGtlZWU6HA7fcV0X1Wr1lUQioQF4fmNj4+rAwEBGkqQMY+wWEW0KId4kondGR0cLrJvdoaGhG4yx9wB4RJQul8t/AUA0Gn1uaWnpkaIoOD09dSORSLBer2Nzc3MknU7/hv+LTCZD2WyW5ufnKwCSc3NzejabpUwm4/3r+7oIdnZ2XNu2xfDwsENEP8RisbrjOLS/v29dStC27Tc8z2OKokT29vbuKYryqud58Pv9E5cSbLVarXw+/2h1dTXX19cXWl9fLxweHj6s1WptXBJ+ADcAPDsyMmIwxsKdOggAfwOpZLGNo7pH7AAAAABJRU5ErkJggg==" alt="ServiceManager"/>
+        <span class="zdt-toolbar-info">
+            <?php echo count($services); ?>
+            service instantiations logged
+        </span>
+    </div>
+    <div class="zdt-toolbar-detail">
+        <span class="zdt-toolbar-info zdt-toolbar-info-heading">OcraServiceManager</span>
+        <span class="zdt-toolbar-info">
+            <span class="zdt-detail-value zdt-detail-value">
+                <br/>
+                <a href="https://github.com/Ocramius/OcraServiceManager" target="_blank">
+                    Contribute! Fork us!
+                </a>
+            </span>
+        </span>
+        <span class="zdt-toolbar-info">
+            <span class="zdt-detail-value zdt-detail-value-right">
+                <br/>
+                <a href="<?php echo $this->escapeHtmlAttr($this->yumlUrl()->getUrl($services)); ?>" target="_blank">
+                    Dependency Graph
+                </a>
+            </span>
+        </span>
+        <span class="zdt-toolbar-info zdt-toolbar-info-heading">Services</span>
+        <span class="zdt-toolbar-info osmdt-toolbar-info">
+        <?php foreach ($services as $serviceName => $details): ?>
+                <hr/>
+                <span class="zdt-detail-label"><?php echo $serviceName; ?></span>
+                <span class="clear"></span>
+                <?php if (count($details['names']) > 1): ?>
+                <span class="zdt-detail-label">Names</span>
+                <span class="zdt-detail-value osmdt-detail-value">
+                <?php foreach ($details['names'] as $name): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $name ?><br/>
+                <?php endforeach ?>
+                </span>
+                <span class="clear"></span>
+                <?php endif ?>
+                <?php if ($details['dependencies']): ?>
+                <span class="zdt-detail-label">Dependencies</span>
+                <span class="zdt-detail-value osmdt-detail-value">
+                <?php foreach ($details['dependencies'] as $dependency): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $dependency ?><br/>
+                <?php endforeach ?>
+                </span>
+                <span class="clear"></span>
+                <?php endif ?>
+                <?php if ($details['depending']): ?>
+                <span class="zdt-detail-label">Depending</span>
+                <span class="zdt-detail-value osmdt-detail-value">
+                <?php foreach ($details['depending'] as $depending): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $depending ?><br/>
+                <?php endforeach ?>
+                </span>
+                <span class="clear"></span>
+                <?php endif ?>
+                <span class="zdt-detail-label">Accesses</span>
+                <span class="zdt-detail-value osmdt-detail-value">
+                &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $details['accesses'] ?><br/>
+                </span>
+                <span class="clear"></span>
+                <span class="zdt-detail-label">Instances</span>
+                <span class="zdt-detail-value osmdt-detail-value">
+                &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $details['instances'] ?><br/>
+                </span>
+                <span class="clear"></span>
+            <?php endforeach ?>
+        </span>
+    </div>
+    <?php else: ?>
+    <div class="zdt-toolbar-preview">
+        <img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAA0JJREFUOMudVEFoI1UY/t4kk2yUylZlFNuaDduw2A2IiCD0WgQPqVUsewgt6kXQXEpPnoqnii3tJeAacVdahNLSiyClttCSgdimCZWCuOykk5mNEtYsNGYmTCaZ934vWai4ibXf6f3vfXx8//++9xi6QNO0d0Oh0LoQouW67s1oNGrgApDOF4ZhfGea5hQAnJ2dRTjnPtd1n2o0Gi8BgGmaXxiG8WUvQfZ4USqV7vp8vg+EEGCMnTLGrneOCAAjIgPANQAQQnwSiUS+6uqwv79fSqVST3POCQCI6HogEIBt2+S6LvP5fCCia0QEy7L48vLyMxdp/4qqqm3DMEjXdZFMJu8DSEuStLqwsPDANE0yTZN2d3dNAL6eSsVi8X1N05K6rlO5XKbZ2dmfAQyco9xcXFy8XyqVSNd1R9O0j4rF4uSTtPydmawRESMiVKtVpFKpWwD+OMf7tVKpfFqv138KhUJBAN8QEQHYeKKgZVlMlmUWCAQgyzKazebvjLF/EKempiqSJEEIwZrNJjjn6OpwYmLie0VRXlhbW3srGAwin89/C+DD80TO+bIsy3Acx0skEj82Gg2rZ2wAYHt7mw8ODkpEBCL6mohuA5AZY58DeFuSJOi6Xo7H4y//Zw5PTk6WOOczjDF0WgOAdudGpcd7RNSWZfnjWCx2t9dLkVRVDQshUKvV2rlc7qFt24Jz7uecs1qtxo+Ojv50HIc3m03f1tbWiwBQKBQCvdITmZyc/CUej98G8NrMzMydg4MDoaoqjY2NfQbg9enp6d3x8fEdAFcBIJfL3Ts+Ppa6zhDAFQAyAGtlZWU6HA7fcV0X1Wr1lUQioQF4fmNj4+rAwEBGkqQMY+wWEW0KId4kondGR0cLrJvdoaGhG4yx9wB4RJQul8t/AUA0Gn1uaWnpkaIoOD09dSORSLBer2Nzc3MknU7/hv+LTCZD2WyW5ufnKwCSc3NzejabpUwm4/3r+7oIdnZ2XNu2xfDwsENEP8RisbrjOLS/v29dStC27Tc8z2OKokT29vbuKYryqud58Pv9E5cSbLVarXw+/2h1dTXX19cXWl9fLxweHj6s1WptXBJ+ADcAPDsyMmIwxsKdOggAfwOpZLGNo7pH7AAAAABJRU5ErkJggg==" alt="ServiceManager"/>
+        <span class="zdt-toolbar-info">
+            Could not log services. Did you set
+            <code>$config['ocra_service_manager']['logged_service_manager'] = true;</code>
+            in your configuration?
+        </span>
+    </div>
+    <?php endif ?>
+</div>
+<style>
+    .zdt-toolbar-entry .zdt-toolbar-detail .osmdt-toolbar-info {
+        font-size: 11px;
+        max-width: 600px;
+        witdh: 600px;
+        max-height: 300px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .zdt-toolbar-entry .zdt-toolbar-info .clear {
+
+        clear: both;
+        display: block;
+    }
+
+    .zdt-toolbar-entry .zdt-toolbar-detail .osmdt-toolbar-info hr {
+        border: 0;
+        border-top: 1px solid #80DC09;
+        clear: both;
+    }
+</style>
