@@ -70,6 +70,7 @@ class YumlController extends AbstractActionController
 
         /* @var $redirect \Zend\Mvc\Controller\Plugin\Redirect */
         $redirect = $this->plugin('redirect');
+
         return $redirect->toUrl('http://yuml.me/' . $response->getBody());
     }
 

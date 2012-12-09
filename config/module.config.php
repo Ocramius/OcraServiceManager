@@ -32,7 +32,6 @@ return array(
         ),
     ),
 
-
     // zenddevelopertools specific settings
     'view_manager' => array(
         'template_map' => array(
