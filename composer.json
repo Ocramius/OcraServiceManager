@@ -16,11 +16,18 @@
             "homepage": "http://ocramius.github.com/"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "zendframework/zend-mvc": "2.*",
         "zendframework/zend-servicemanager": "2.*",
         "zendframework/zend-modulemanager": "2.*",
         "doctrine/common": "dev-DCOM-96 as dev-master"
+    },
+    "require-dev": {
+        "zendframework/zend-developer-tools": "dev-master"
+    },
+    "suggest": {
+        "zendframework/zend-developer-tools": "Allows displaying service dependencies"
     },
     "autoload": {
         "psr-0": {
