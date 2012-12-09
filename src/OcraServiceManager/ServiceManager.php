@@ -19,7 +19,6 @@
 namespace OcraServiceManager;
 
 use Zend\ServiceManager\ServiceManager as BaseServiceManager;
-use Zend\ServiceManager\AbstractFactoryInterface;
 
 /**
  * ServiceManager with additional capabilities, such as generating proxy

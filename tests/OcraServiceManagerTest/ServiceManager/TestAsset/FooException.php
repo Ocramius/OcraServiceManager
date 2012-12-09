@@ -18,7 +18,6 @@
 
 namespace OcraServiceManagerTest\ServiceManager\TestAsset;
 
-
 class FooException extends \Exception
 {
 }

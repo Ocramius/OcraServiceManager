@@ -125,11 +125,11 @@ class LoggedServiceManager extends BaseServiceManager
     /**
      * Registers a retrieved service
      *
-     * @param  object      $instance
-     * @param  string      $serviceName
-     * @param  string      $requestedName
+     * @param object $instance
+     * @param string $serviceName
+     * @param string $requestedName
      *
-     * @return boolean     true if a service was registered
+     * @return boolean true if a service was registered
      */
     protected function registerServiceCall($instance, $serviceName, $requestedName)
     {
@@ -152,7 +152,7 @@ class LoggedServiceManager extends BaseServiceManager
     /**
      * Retrieve the canonical names of the dependencies of $service
      *
-     * @param  string $service
+     * @param  string        $service
      * @return string[]|bool false if dependencies cannot be resolved
      */
     public function getDependencies($service)
@@ -186,7 +186,7 @@ class LoggedServiceManager extends BaseServiceManager
     /**
      * Retrieves the canonical names of the services that need $service
      *
-     * @param  string $service
+     * @param  string     $service
      * @return array|bool false if no discovery is possible
      */
     public function getDepending($service)
@@ -219,7 +219,7 @@ class LoggedServiceManager extends BaseServiceManager
     /**
      * Analyzes a provided trace, looking for the first instantiation requesting $serviceName
      *
-     * @param array  $trace a debug_backtrace produced call definition
+     * @param array  $trace       a debug_backtrace produced call definition
      * @param string $serviceName name of the service for which we're looking for the parent requester
      */
     protected function getParentRequestingService($trace, $serviceName)
