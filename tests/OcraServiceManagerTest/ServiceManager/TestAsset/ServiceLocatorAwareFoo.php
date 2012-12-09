@@ -16,35 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManager\View\Helper;
+namespace OcraServiceManagerTest\ServiceManager\TestAsset;
 
-use Zend\View\Helper\AbstractHelper;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-/**
- * Helper used to generate YUML {@see http://http://yuml.me/} diagram links
- * from a dependency tree
- *
- * @author  Marco Pivetta <ocramius@gmail.com>
- * @license MIT
- */
-class YumlUrl extends AbstractHelper
+class ServiceLocatorAwareFoo implements ServiceLocatorAwareInterface
 {
     /**
-     * Retrieves a YUML diagram link
-     *
-     * @param array $services services as produced by
-     *              {@see \OcraServiceManager\ServiceManager\LoggedServiceManager::getLoggedServices}
+     * @var ServiceLocatorInterface
      */
-    public function getUrl(array $services)
+    protected $serviceLocator;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $chunks = array();
+        $this->serviceLocator = $serviceLocator;
+    }
 
-        foreach ($services as $serviceName => $details) {
-            foreach ($details['dependencies'] as $dependency) {
-                $chunks[] = '[' . $serviceName . ']->[' . $dependency . ']';
-            }
-        }
+    /**
+     * {@inheritDoc}
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
 
-        return implode(',', $chunks);
+    /**
+     * @return Foo
+     */
+    public function getFoo()
+    {
+        return $this->serviceLocator->get('foo');
     }
 }

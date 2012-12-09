@@ -25,9 +25,14 @@
         <span class="zdt-toolbar-info">
             <span class="zdt-detail-value zdt-detail-value-right">
                 <br/>
-                <a href="<?php echo $this->escapeHtmlAttr($this->yumlUrl()->getUrl($services)); ?>" target="_blank">
-                    Dependency Graph
-                </a>
+                <form method="post" action="<?php
+                    echo $this->url('ocra_service_manager_yuml', array());
+                ?>" target="_blank">
+                    <input type="hidden" name="dsl_text" value="<?php
+                        echo $this->escapeHtmlAttr($this->yumlUrl()->getUrl($services));
+                    ?>"/>
+                    <input type="submit" value="Dependency Graph"/>
+                </form>
             </span>
         </span>
         <span class="zdt-toolbar-info zdt-toolbar-info-heading">Services</span>

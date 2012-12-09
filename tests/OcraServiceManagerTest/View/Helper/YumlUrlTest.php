@@ -30,11 +30,6 @@ use OcraServiceManager\View\Helper\YumlUrl;
 class YumlUrlTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Zend\Escaper\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $escaper;
-
-    /**
      * @var YumlUrl
      */
     protected $helper;
@@ -45,18 +40,13 @@ class YumlUrlTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->escaper = $this->getMock('Zend\\Escaper\\Escaper');
         $this->helper = new YumlUrl($this->escaper);
     }
 
     public function testGetUrl()
     {
-        $this->escaper->expects($this->any())->method('escapeUrl')->will($this->returnCallback(function ($toEscape) {
-            return $toEscape;
-        }));
-
         $this->assertSame(
-            'http://yuml.me/diagram/scruffy/class/[key]->[value]',
+            '[key]->[value]',
             $this->helper->getUrl(array(
                 'key' => array(
                     'dependencies' => array(
@@ -67,7 +57,7 @@ class YumlUrlTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(
-            'http://yuml.me/diagram/scruffy/class/[key]->[value],[key]->[value1],[key2]->[value2]',
+            '[key]->[value],[key]->[value1],[key2]->[value2]',
             $this->helper->getUrl(array(
                 'key'  => array(
                     'dependencies' => array(

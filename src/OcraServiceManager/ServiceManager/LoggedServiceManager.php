@@ -20,6 +20,7 @@ namespace OcraServiceManager\ServiceManager;
 
 use OcraServiceManager\ServiceManager as BaseServiceManager;
 use Zend\Stdlib\ArrayUtils;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * ServiceManager with additional logging capabilities.
@@ -224,10 +225,22 @@ class LoggedServiceManager extends BaseServiceManager
     protected function getParentRequestingService($trace, $serviceName)
     {
         foreach ($trace as $methodCall) {
-            // skip any call not referring to the service manager and which isn't to `get` or `create`
+            // not an invoking object: skip
+            if (!isset($methodCall['object'])) {
+                continue;
+            }
+
+            // service locator aware - maybe the dependency was pulled later on
+            if ($methodCall['object'] instanceof ServiceLocatorAwareInterface) {
+                $oid = spl_object_hash($methodCall['object']);
+
+                if (isset($this->instanceHashes[$oid])) {
+                    return $this->instanceHashes[$oid];
+                }
+            }
+
             if (
-                !isset($methodCall['object'])
-                || !($methodCall['object'] === $this)
+                !($methodCall['object'] === $this)
                 || !(strtolower($methodCall['function']) === 'get' || strtolower($methodCall['function']) === 'create')
             ) {
                 continue;

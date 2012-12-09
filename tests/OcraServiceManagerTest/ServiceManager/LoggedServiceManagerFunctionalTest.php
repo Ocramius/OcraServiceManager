@@ -29,6 +29,7 @@ use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 use OcraServiceManagerTest\ServiceManager\TestAsset\FooCounterAbstractFactory;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -756,5 +757,40 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('dep2', $loggedServices);
         $this->assertArrayHasKey('depending1', $loggedServices);
         $this->assertArrayHasKey('depending2', $loggedServices);
+    }
+
+    /**
+     * Verify that dependencies are discovered also through initialized objects
+     * implementing {@see \Zend\ServiceManager\ServiceLocatorAwareInterface}
+     *
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::registerServiceCall
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getDepending
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getDependencies
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getParentRequestingService
+     */
+    public function testDiscoverDependenciesOnServiceLocatorAwareService()
+    {
+        $this->serviceManager->addInitializer(function ($instance, ServiceLocatorInterface $serviceLocator) {
+            if ($instance instanceof ServiceLocatorAwareInterface) {
+                $instance->setServiceLocator($serviceLocator);
+            }
+        });
+
+        $this->serviceManager->setInvokableClass(
+            'aware-foo',
+            'OcraServiceManagerTest\ServiceManager\TestAsset\ServiceLocatorAwareFoo'
+        );
+
+        $this->serviceManager->setInvokableClass('foo', 'OcraServiceManagerTest\ServiceManager\TestAsset\Foo');
+
+        /* @var $awareFoo \OcraServiceManagerTest\ServiceManager\TestAsset\ServiceLocatorAwareFoo */
+        $awareFoo = $this->serviceManager->get('aware-foo');
+        $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\ServiceLocatorAwareFoo', $awareFoo);
+        $this->assertSame($this->serviceManager, $awareFoo->getServiceLocator());
+        // triggering fetch of "foo" in the service
+        $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\Foo', $awareFoo->getFoo());
+
+        $this->assertSame(array('awarefoo'), $this->serviceManager->getDepending('foo'));
+        $this->assertSame(array('foo'), $this->serviceManager->getDependencies('awarefoo'));
     }
 }

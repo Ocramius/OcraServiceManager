@@ -31,17 +31,39 @@ return array(
             'adapter' => 'memory',
         ),
     ),
+
+
+    // zenddevelopertools specific settings
     'view_manager' => array(
         'template_map' => array(
             'zend-developer-tools/toolbar/ocra-service-manager' =>
             __DIR__ . '/../view/zend-developer-tools/toolbar/ocra-service-manager.phtml',
         ),
     ),
+    'controllers' => array(
+        'invokables' => array(
+            'OcraServiceManager\\Controller\\YumlController' => 'OcraServiceManager\\Controller\\YumlController',
+        ),
+    ),
+
+    'router' => array(
+        'routes' => array(
+            'ocra_service_manager_yuml' => array(
+                'type' => 'Zend\\Mvc\\Router\\Http\\Literal',
+                'options' => array(
+                    'route'    => '/ocra_service_manager_yuml',
+                    'defaults' => array(
+                        'controller' => 'OcraServiceManager\\Controller\\YumlController',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+        ),
+    ),
     'zenddevelopertools' => array(
         'profiler' => array(
             'collectors' => array(
-                //'ocra_service_manager' => 'OcraServiceManager\\ServiceManager\\ZDTCollector',
-                'ocra_service_manager' => 'OcraServiceManager\ServiceManager\ZDTCollector',
+                'ocra_service_manager' => 'OcraServiceManager\\ServiceManager\\ZDTCollector',
             ),
         ),
         'toolbar' => array(
