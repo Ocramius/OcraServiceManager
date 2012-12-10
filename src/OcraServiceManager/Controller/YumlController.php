@@ -88,7 +88,7 @@ class YumlController extends AbstractActionController
     public function getHttpClient()
     {
         if (!$this->httpClient) {
-            $this->httpClient = new Client('http://yuml.me/diagram/scruffy;/class/short_url/');
+            $this->httpClient = new Client('http://yuml.me/diagram/scruffy;/class/');
         }
 
         return $this->httpClient;
