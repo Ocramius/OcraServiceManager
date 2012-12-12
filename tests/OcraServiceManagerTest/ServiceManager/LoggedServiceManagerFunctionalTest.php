@@ -26,11 +26,8 @@ use Zend\ServiceManager\Di\DiAbstractServiceFactory;
 use Zend\ServiceManager\Exception;
 use Zend\ServiceManager\ServiceManager as BaseServiceManager;
 use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 use OcraServiceManagerTest\ServiceManager\TestAsset\FooCounterAbstractFactory;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -139,7 +136,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager->setFactory('foo', function () {
             return new \stdClass();
         });
-        $obj = $this->serviceManager->get('foo');
+        $this->serviceManager->get('foo');
         $this->assertSame($this->serviceManager, $initializer->sm);
     }
 
@@ -530,7 +527,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
             new BaseServiceManager($config)
         );
         $serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
-        $foo = $serviceManager->get('unknownObject');
+        $serviceManager->get('unknownObject');
     }
 
     /**
@@ -538,7 +535,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDoNotFallbackToAbstractFactory()
     {
-        $factory = function ($sm) {
+        $factory = function () {
             return new TestAsset\Bar();
         };
         $serviceManager = new LoggedServiceManager(
@@ -549,7 +546,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         $di = new Di();
         $di->instanceManager()->setParameters('ZendTest\ServiceManager\TestAsset\Bar', array('foo' => array('a')));
         $serviceManager->addAbstractFactory(new DiAbstractServiceFactory($di));
-        $bar = $serviceManager->get('ZendTest\ServiceManager\TestAsset\Bar');
+        $serviceManager->get('ZendTest\ServiceManager\TestAsset\Bar');
     }
 
     /**
@@ -558,8 +555,8 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testAssignAliasWithExistingServiceName()
     {
         $this->serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
-        $this->serviceManager->setFactory('bar', function ($sm) {
-            return new Bar(array('a'));
+        $this->serviceManager->setFactory('bar', function () {
+            // not called
         });
         $this->serviceManager->setAllowOverride(false);
         // should throw an exception because 'foo' already exists in the service manager
@@ -591,7 +588,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testShouldRaiseExceptionIfInitializerClassIsNotAnInitializerInterfaceImplementation()
     {
         $this->setExpectedException('Zend\ServiceManager\Exception\InvalidArgumentException');
-        $result = $this->serviceManager->addInitializer(get_class($this));
+        $this->serviceManager->addInitializer(get_class($this));
     }
 
     public function duplicateService()
@@ -601,7 +598,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 'setFactory',
-                function ($services) use ($self) {
+                function () use ($self) {
                     return $self;
                 },
                 $self,

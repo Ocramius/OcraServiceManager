@@ -40,7 +40,7 @@ class YumlUrlTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->helper = new YumlUrl($this->escaper);
+        $this->helper = new YumlUrl();
     }
 
     public function testGetUrl()

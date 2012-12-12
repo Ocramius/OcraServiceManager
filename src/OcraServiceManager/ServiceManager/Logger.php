@@ -179,8 +179,11 @@ class Logger implements ListenerAggregateInterface
     /**
      * Analyzes a provided trace, looking for the first instantiation requesting $serviceName
      *
-     * @param array  $trace       a debug_backtrace produced call definition
-     * @param string $serviceName name of the service for which we're looking for the parent requester
+     * @param array $tracedCallInfo the element of {@see self::tracedCalls}
+     *                       of which we're looking for a parent dependant service
+     *
+     * @return array|boolean false if a dependant service could not be found, the element
+     *                             in {@see self::tracedCalls} otherwise
      */
     protected function getParentRequestingService($tracedCallInfo)
     {
@@ -194,7 +197,7 @@ class Logger implements ListenerAggregateInterface
             if (
                 $methodCall['object'] instanceof ServiceLocatorAwareInterface
                 || $methodCall['object'] instanceof ServiceManagerAwareInterface
-            ) {
+) {
                 foreach ($this->tracedCalls as $tracedCall) {
                     if ($tracedCall['instance'] === $methodCall['object']) {
                         return $tracedCall;
@@ -227,7 +230,7 @@ class Logger implements ListenerAggregateInterface
                 if (
                     $tracedCall['service_locator'] === $methodCall['object']
                     && $tracedCall['requested_name'] === $rName
-                ) {
+) {
                     return $tracedCall;
                 }
             }

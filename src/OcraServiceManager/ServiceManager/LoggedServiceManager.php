@@ -19,10 +19,7 @@
 namespace OcraServiceManager\ServiceManager;
 
 use OcraServiceManager\ServiceManager as BaseServiceManager;
-use Zend\Stdlib\ArrayUtils;
 use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 
 /**

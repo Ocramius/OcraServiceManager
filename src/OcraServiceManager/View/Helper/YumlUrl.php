@@ -32,8 +32,9 @@ class YumlUrl extends AbstractHelper
     /**
      * Retrieves a YUML diagram link
      *
-     * @param array $services services as produced by
-     *              {@see \OcraServiceManager\ServiceManager\LoggedServiceManager::getLoggedServices}
+     * @param array $services services as produced by {@see \OcraServiceManager\ServiceManager\LoggedServiceManager::getLoggedServices}
+     *
+     * @return string
      */
     public function getUrl(array $services)
     {

@@ -122,7 +122,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             return $data[$name];
         }));
 
-
         $result = $this->listener->logServiceManagerCreate($event);
 
         $this->assertSame($instance, $result['instance']);

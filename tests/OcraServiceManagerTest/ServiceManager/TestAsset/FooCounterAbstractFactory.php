@@ -47,6 +47,8 @@ class FooCounterAbstractFactory implements AbstractFactoryInterface
         if ($name == 'foo') {
             return true;
         }
+
+        return false;
     }
 
     /**
