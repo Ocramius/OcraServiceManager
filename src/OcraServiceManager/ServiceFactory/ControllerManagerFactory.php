@@ -18,24 +18,22 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use OcraServiceManager\ServiceManager;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\Mvc\Service\ControllerLoaderFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use OcraServiceManager\ServiceManager\LoggedServiceManager;
+use OcraServiceManager\ServiceManager\LoggedControllerManager;
 
 /**
- * Factory responsible of building an {@see OcraServiceManager\ServiceManager}
+ * Factory responsible of building a {@see \OcraServiceManager\ServiceManager\LoggedControllerManager}
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
+ *
+ * @todo lazy services support?
  */
-class ServiceManagerFactory implements FactoryInterface
+class ControllerManagerFactory extends ControllerLoaderFactory
 {
     /**
-     * Create an overloaded service manager
-     *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return ServiceManager
+     * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
@@ -45,20 +43,10 @@ class ServiceManagerFactory implements FactoryInterface
             /* @var $eventManager \Zend\EventManager\EventManagerInterface */
             $eventManager = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
             /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new LoggedServiceManager($eventManager, $serviceLocator);
-        } else {
-            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new ServiceManager($serviceLocator);
+
+            return new LoggedControllerManager($eventManager, parent::createService($serviceLocator));
         }
 
-        foreach ($config['service_manager']['lazy_services'] as $lazyService => $factory) {
-            if (is_int($lazyService)) {
-                $serviceManager->setProxyService($factory);
-            } else {
-                $serviceManager->setProxyService($lazyService, $factory);
-            }
-        }
-
-        return $serviceManager;
+        return parent::createService($serviceLocator);
     }
 }

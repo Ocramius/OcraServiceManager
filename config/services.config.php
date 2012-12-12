@@ -22,6 +22,9 @@ return array(
     ),
     'factories'  => array(
         'Application'                                           => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
+        'ControllerPluginManager'                               => 'OcraServiceManager\\ServiceFactory\\ControllerPluginManagerFactory',
+        'ControllerLoader'                                      => 'OcraServiceManager\\ServiceFactory\\ControllerManagerFactory',
+        'ViewHelperManager'                                     => 'OcraServiceManager\\ServiceFactory\\ViewHelperPluginManagerFactory',
         'OcraServiceManager\\ServiceManager\\EventManager'      => 'OcraServiceManager\\ServiceFactory\\EventManagerFactory',
         'OcraServiceManager\\View\\Helper\\YumlUrl'             => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
         'OcraServiceManager\\ServiceManager'                    => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',

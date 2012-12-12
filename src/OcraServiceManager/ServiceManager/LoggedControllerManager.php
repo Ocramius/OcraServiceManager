@@ -18,22 +18,19 @@
 
 namespace OcraServiceManager\ServiceManager;
 
-use OcraServiceManager\ServiceManager as BaseServiceManager;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Mvc\Controller\ControllerManager;
 use Zend\EventManager\EventManagerInterface;
 
 /**
- * ServiceManager with additional logging capabilities.
+ * Controller Plugin manager with additional logging capabilities.
  * Currently able to trace back dependencies by overloading `create` and `get`
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  *
- * @todo extend  {@see \OcraServiceManager\ServiceManager\ServiceManager} instead
- *
- * @todo support all other objects implementing \Zend\ServiceManager\ServiceLocatorInterface (AOP?)
+ * @todo support lazy services
  */
-class LoggedServiceManager extends BaseServiceManager
+class LoggedControllerManager extends ControllerManager
 {
     /**
      * @var EventManagerInterface
@@ -44,13 +41,32 @@ class LoggedServiceManager extends BaseServiceManager
      * {@inheritDoc}
      *
      * @param EventManagerInterface $eventManager
-     * @param ServiceManager        $serviceManager
+     * @param ControllerManager     $controllerManager
      */
-    public function __construct(EventManagerInterface $eventManager, ServiceManager $serviceManager)
+    public function __construct(EventManagerInterface $eventManager, ControllerManager $controllerManager)
     {
         $this->eventManager = $eventManager;
 
-        parent::__construct($serviceManager);
+        // localizing scope since we're proxying the base service manager
+        $this->canonicalNames                   = & $controllerManager->canonicalNames;
+        $this->allowOverride                    = & $controllerManager->allowOverride;
+        $this->invokableClasses                 = & $controllerManager->invokableClasses;
+        $this->factories                        = & $controllerManager->factories;
+        $this->abstractFactories                = & $controllerManager->abstractFactories;
+        $this->pendingAbstractFactoryRequests   = & $controllerManager->pendingAbstractFactoryRequests;
+        $this->shared                           = & $controllerManager->shared;
+        $this->instances                        = & $controllerManager->instances;
+        $this->aliases                          = & $controllerManager->aliases;
+        $this->initializers                     = & $controllerManager->initializers;
+        $this->peeringServiceManagers           = & $controllerManager->peeringServiceManagers;
+        $this->shareByDefault                   = & $controllerManager->shareByDefault;
+        $this->retrieveFromPeeringManagerFirst  = & $controllerManager->retrieveFromPeeringManagerFirst;
+        $this->throwExceptionInCreate           = & $controllerManager->throwExceptionInCreate;
+        $this->canonicalNamesReplacements       = & $controllerManager->canonicalNamesReplacements;
+        $this->autoAddInvokableClass            = & $controllerManager->autoAddInvokableClass;
+        $this->creationOptions                  = & $controllerManager->creationOptions;
+        $this->serviceLocator                   = & $controllerManager->serviceLocator;
+        parent::__construct();
     }
 
     /**
