@@ -26,30 +26,14 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
      * @covers \OcraServiceManager\ServiceManager\ZDTCollector::__construct
      * @covers \OcraServiceManager\ServiceManager\ZDTCollector::collect
      * @covers \OcraServiceManager\ServiceManager\ZDTCollector::getServices
-     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::couldCollect
      */
     public function testGetServices()
     {
-        $locator = $this->getMock('OcraServiceManager\ServiceManager\LoggedServiceManager', array(), array(), '', false);
-        $collector = new ZDTCollector($locator);
-        $locator->expects($this->any())->method('getLoggedServices')->will($this->returnValue(array('a' => array())));
+        $logger = $this->getMock('OcraServiceManager\ServiceManager\Logger');
+        $collector = new ZDTCollector($logger);
+        $logger->expects($this->any())->method('getLoggedServices')->will($this->returnValue(array('a' => array())));
         $collector->collect($this->getMock('Zend\Mvc\MvcEvent'));
-        $this->assertTrue($collector->couldCollect());
         $this->assertSame(array('a' => array()), $collector->getServices());
-    }
-
-    /**
-     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::__construct
-     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::collect
-     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::getServices
-     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::couldCollect
-     */
-    public function testWillNotCollectWithoutLoggedServiceManager()
-    {
-        $collector = new ZDTCollector($this->getMock('Zend\ServiceManager\ServiceLocatorInterface'));
-        $collector->collect($this->getMock('Zend\Mvc\MvcEvent'));
-        $this->assertFalse($collector->couldCollect());
-        $this->assertSame(array(), $collector->getServices());
     }
 
     /**
@@ -57,7 +41,7 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPriority()
     {
-        $collector = new ZDTCollector($this->getMock('Zend\ServiceManager\ServiceLocatorInterface'));
+        $collector = new ZDTCollector($this->getMock('OcraServiceManager\ServiceManager\Logger'));
         $this->assertInternalType('int', $collector->getPriority());
     }
 
@@ -66,7 +50,7 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $collector = new ZDTCollector($this->getMock('Zend\ServiceManager\ServiceLocatorInterface'));
+        $collector = new ZDTCollector($this->getMock('OcraServiceManager\ServiceManager\Logger'));
         $this->assertInternalType('string', $collector->getName());
     }
 
@@ -76,12 +60,11 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializeUnserialize()
     {
-        $locator = $this->getMock('OcraServiceManager\ServiceManager\LoggedServiceManager', array(), array(), '', false);
-        $collector = new ZDTCollector($locator);
-        $locator->expects($this->any())->method('getLoggedServices')->will($this->returnValue(array('a' => array())));
+        $logger = $this->getMock('OcraServiceManager\ServiceManager\Logger');
+        $collector = new ZDTCollector($logger);
+        $logger->expects($this->any())->method('getLoggedServices')->will($this->returnValue(array('a' => array())));
         $collector->collect($this->getMock('Zend\Mvc\MvcEvent'));
         $collector = unserialize(serialize($collector));
-        $this->assertTrue($collector->couldCollect());
         $this->assertSame(array('a' => array()), $collector->getServices());
     }
 }

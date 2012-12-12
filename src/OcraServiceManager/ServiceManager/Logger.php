@@ -265,7 +265,7 @@ class Logger implements ListenerAggregateInterface
         }
 
         foreach ($loggedServices as $cName => $details) {
-            //$loggedServices[$cName]['dependencies'] = $this->getDependencies($cName);
+            $loggedServices[$cName]['dependencies'] = $this->getDependencies($cName);
             $loggedServices[$cName]['depending']    = $this->getDepending($cName);
             $loggedServices[$cName]['instances']    = count($loggedServices[$cName]['instances']);
         }

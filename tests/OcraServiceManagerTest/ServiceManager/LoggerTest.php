@@ -639,5 +639,18 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             $this->listener->getDepending('dependency2-canonical-name'),
             $loggedServices['dependency2-canonical-name']['depending']
         );
+
+        $this->assertSame(
+            $this->listener->getDependencies('instance-canonical-name'),
+            $loggedServices['instance-canonical-name']['dependencies']
+        );
+        $this->assertSame(
+            $this->listener->getDependencies('dependency1-canonical-name'),
+            $loggedServices['dependency1-canonical-name']['dependencies']
+        );
+        $this->assertSame(
+            $this->listener->getDependencies('dependency2-canonical-name'),
+            $loggedServices['dependency2-canonical-name']['dependencies']
+        );
     }
 }

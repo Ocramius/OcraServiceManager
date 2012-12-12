@@ -35,6 +35,9 @@ class ZDTCollectorFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ZDTCollector($serviceLocator);
+        /* @var $logger \OcraServiceManager\ServiceManager\Logger */
+        $logger = $serviceLocator->get('OcraServiceManager\\ServiceManager\\Logger');
+
+        return new ZDTCollector($logger);
     }
 }

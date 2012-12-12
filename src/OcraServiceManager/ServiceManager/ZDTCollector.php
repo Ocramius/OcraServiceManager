@@ -32,21 +32,14 @@ use Serializable;
 class ZDTCollector implements CollectorInterface, Serializable
 {
     /**
-     * @var ServiceLocatorInterface
+     * @var Logger
      */
-    protected $serviceLocator;
+    protected $logger;
 
     /**
      * @var array of collected services with their dependencies
      */
     protected $collectedServices = array();
-
-    /**
-     * Defines if the collector was able to collect data
-     *
-     * @var bool
-     */
-    protected $couldCollect = false;
 
     /**
      * Collector priority
@@ -56,9 +49,9 @@ class ZDTCollector implements CollectorInterface, Serializable
     /**
      * @param ServiceLocatorInterface $serviceLocator
      */
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(Logger $logger)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->logger = $logger;
     }
 
     /**
@@ -84,14 +77,7 @@ class ZDTCollector implements CollectorInterface, Serializable
      */
     public function collect(MvcEvent $mvcEvent)
     {
-        if (!$this->serviceLocator instanceof LoggedServiceManager) {
-            return;
-        }
-
-        /* @var $locator LoggedServiceManager */
-        $locator                 = $this->serviceLocator;
-        $this->collectedServices = $locator->getLoggedServices();
-        $this->couldCollect      = true;
+        $this->collectedServices = $this->logger->getLoggedServices();
     }
 
     /**
@@ -101,7 +87,6 @@ class ZDTCollector implements CollectorInterface, Serializable
     {
         return serialize(array(
             'collectedServices' => $this->collectedServices,
-            'couldCollect'      => $this->couldCollect,
         ));
     }
 
@@ -112,7 +97,6 @@ class ZDTCollector implements CollectorInterface, Serializable
     {
         $data                    = unserialize($serialized);
         $this->collectedServices = $data['collectedServices'];
-        $this->couldCollect      = $data['couldCollect'];
     }
 
     /**
@@ -123,15 +107,5 @@ class ZDTCollector implements CollectorInterface, Serializable
     public function getServices()
     {
         return $this->collectedServices;
-    }
-
-    /**
-     * Retrieves whether the collector was able to retrieve information from the provided service locator
-     *
-     * @return bool
-     */
-    public function couldCollect()
-    {
-        return $this->couldCollect;
     }
 }
