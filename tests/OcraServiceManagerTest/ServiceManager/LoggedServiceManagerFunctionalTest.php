@@ -30,6 +30,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 use OcraServiceManagerTest\ServiceManager\TestAsset\FooCounterAbstractFactory;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,7 +41,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        $this->serviceManager = new LoggedServiceManager(new BaseServiceManager);
+        $this->serviceManager = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
     }
 
     /**
@@ -49,7 +53,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testConstructorConfig()
     {
         $config = new Config(array('services' => array('foo' => 'bar')));
-        $serviceManager = new LoggedServiceManager(new BaseServiceManager($config));
+        $serviceManager = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager($config)
+        );
         $this->assertEquals('bar', $serviceManager->get('foo'));
     }
 
@@ -241,17 +248,29 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testCanRetrieveFromParentPeeringManager()
     {
-        $parent = new LoggedServiceManager(new BaseServiceManager());
+        $parent = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $parent->setService('foo', 'bar');
-        $child  = new LoggedServiceManager(new BaseServiceManager());
+        $child  = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $child->addPeeringServiceManager($parent, BaseServiceManager::SCOPE_PARENT);
         $this->assertEquals('bar', $child->get('foo'));
     }
 
     public function testCanRetrieveFromChildPeeringManager()
     {
-        $parent = new LoggedServiceManager(new BaseServiceManager());
-        $child  = new LoggedServiceManager(new BaseServiceManager());
+        $parent = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
+        $child  = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $child->addPeeringServiceManager($parent, BaseServiceManager::SCOPE_CHILD);
         $child->setService('foo', 'bar');
         $this->assertEquals('bar', $parent->get('foo'));
@@ -259,11 +278,17 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testAllowsRetrievingFromPeeringContainerFirst()
     {
-        $parent = new LoggedServiceManager(new BaseServiceManager());
+        $parent = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $parent->setFactory('foo', function() {
             return 'bar';
         });
-        $child  = new LoggedServiceManager(new BaseServiceManager());
+        $child  = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $child->setFactory('foo', function() {
             return 'baz';
         });
@@ -447,7 +472,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
                 'foo' => 'ZendTest\ServiceManager\TestAsset\Foo',
             ),
         ));
-        $serviceManager = new LoggedServiceManager(new BaseServiceManager($config));
+        $serviceManager = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager($config)
+        );
         $foo = $serviceManager->get('foo');
         $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Foo', $foo);
     }
@@ -497,7 +525,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
                 'ZendTest\ServiceManager\TestAsset\FooAbstractFactory',
             ),
         ));
-        $serviceManager = new LoggedServiceManager(new BaseServiceManager($config));
+        $serviceManager = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager($config)
+        );
         $serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
         $foo = $serviceManager->get('unknownObject');
     }
@@ -510,7 +541,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         $factory = function ($sm) {
             return new TestAsset\Bar();
         };
-        $serviceManager = new LoggedServiceManager(new BaseServiceManager());
+        $serviceManager = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $serviceManager->setFactory('ZendTest\ServiceManager\TestAsset\Bar', $factory);
         $di = new Di();
         $di->instanceManager()->setParameters('ZendTest\ServiceManager\TestAsset\Bar', array('foo' => array('a')));
@@ -539,7 +573,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testWillNotCreateCircularReferences()
     {
         $abstractFactory = new TestAsset\CircularDependencyAbstractFactory();
-        $sm = new LoggedServiceManager(new BaseServiceManager());
+        $sm = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
         $sm->addAbstractFactory($abstractFactory);
         $foo = $sm->get('foo');
         $this->assertSame($abstractFactory->expectedInstance, $foo);
@@ -659,7 +696,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testCanGetAliasedServicesFromPeeringServiceManagers()
     {
         $service   = new \stdClass();
-        $peeringSm = new LoggedServiceManager(new BaseServiceManager());
+        $peeringSm = new LoggedServiceManager(
+            $this->getMock('Zend\\EventManager\\EventManagerInterface'),
+            new BaseServiceManager()
+        );
 
         $peeringSm->setService('actual-service-name', $service);
         $this->serviceManager->addPeeringServiceManager($peeringSm);
@@ -787,6 +827,40 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
         $awareFoo = $this->serviceManager->get('aware-foo');
         $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\ServiceLocatorAwareFoo', $awareFoo);
         $this->assertSame($this->serviceManager, $awareFoo->getServiceLocator());
+        // triggering fetch of "foo" in the service
+        $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\Foo', $awareFoo->getFoo());
+
+        $this->assertSame(array('awarefoo'), $this->serviceManager->getDepending('foo'));
+        $this->assertSame(array('foo'), $this->serviceManager->getDependencies('awarefoo'));
+    }
+
+    /**
+     * Verify that dependencies are discovered also through initialized objects
+     * implementing {@see \Zend\ServiceManager\ServiceManagerAwareInterface}
+     *
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::registerServiceCall
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getDepending
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getDependencies
+     * @covers \OcraServiceManager\ServiceManager\LoggedServiceManager::getParentRequestingService
+     */
+    public function testDiscoverDependenciesOnServiceManagerAwareService()
+    {
+        $this->serviceManager->addInitializer(function ($instance, ServiceLocatorInterface $serviceLocator) {
+            if ($instance instanceof ServiceManagerAwareInterface) {
+                $instance->setServiceManager($serviceLocator);
+            }
+        });
+
+        $this->serviceManager->setInvokableClass(
+            'aware-foo',
+            'OcraServiceManagerTest\ServiceManager\TestAsset\ServiceManagerAwareFoo'
+        );
+
+        $this->serviceManager->setInvokableClass('foo', 'OcraServiceManagerTest\ServiceManager\TestAsset\Foo');
+
+        /* @var $awareFoo \OcraServiceManagerTest\ServiceManager\TestAsset\ServiceManagerAwareFoo */
+        $awareFoo = $this->serviceManager->get('aware-foo');
+        $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\ServiceManagerAwareFoo', $awareFoo);
         // triggering fetch of "foo" in the service
         $this->assertInstanceOf('OcraServiceManagerTest\ServiceManager\TestAsset\Foo', $awareFoo->getFoo());
 

@@ -43,8 +43,10 @@ class ServiceManagerFactory implements FactoryInterface
         $config = $serviceLocator->get('Config');
 
         if ($config['ocra_service_manager']['logged_service_manager']) {
+            /* @var $eventManager \Zend\EventManager\EventManagerInterface */
+            $eventManager = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
             /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new LoggedServiceManager($serviceLocator);
+            $serviceManager = new LoggedServiceManager($eventManager, $serviceLocator);
         } else {
             /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
             $serviceManager = new ServiceManager($serviceLocator);

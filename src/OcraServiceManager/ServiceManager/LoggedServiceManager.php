@@ -20,7 +20,10 @@ namespace OcraServiceManager\ServiceManager;
 
 use OcraServiceManager\ServiceManager as BaseServiceManager;
 use Zend\Stdlib\ArrayUtils;
+use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 
 /**
  * ServiceManager with additional logging capabilities.
@@ -32,9 +35,19 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @todo support {@see \Zend\ServiceManager\AbstractPluginManager}
  * @todo support non-object services
  * @todo extend  {@see \OcraServiceManager\ServiceManager\ServiceManager} instead
+ *
+ * @todo support \Zend\Mvc\Controller\PluginManager
+ * @todo support \Zend\Mvc\Controller\ControllerManager
+ * @todo support \Zend\View\HelperPluginManager
+ * @todo support all other objects implementing \Zend\ServiceManager\ServiceLocatorInterface
  */
 class LoggedServiceManager extends BaseServiceManager
 {
+    /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
+
     /**
      * Map of instance object hashes and their associated service name
      *
@@ -68,6 +81,13 @@ class LoggedServiceManager extends BaseServiceManager
      */
     protected $getTraces = array();
 
+    public function __construct(EventManagerInterface $eventManager, ServiceManager $serviceManager)
+    {
+        $this->eventManager = $eventManager;
+
+        parent::__construct($serviceManager);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -81,6 +101,16 @@ class LoggedServiceManager extends BaseServiceManager
         }
 
         $instance = parent::create($name);
+
+        $this->eventManager->trigger(
+            Logger::SERVICE_MANAGER_CREATE,
+            $this,
+            array(
+                'instance'       => $instance,
+                'canonical_name' => $cName,
+                'requested_name' => $rName,
+            )
+        );
 
         if (is_object($instance)) {
             $oid = spl_object_hash($instance);
@@ -108,6 +138,16 @@ class LoggedServiceManager extends BaseServiceManager
         }
 
         $instance = parent::get($name, $usePeeringServiceManagers);
+
+        $this->eventManager->trigger(
+            Logger::SERVICE_LOCATOR_GET,
+            $this,
+            array(
+                'instance'       => $instance,
+                'canonical_name' => $cName,
+                'requested_name' => $name,
+            )
+        );
 
         if (is_object($instance)) {
             $oid = spl_object_hash($instance);
@@ -231,7 +271,10 @@ class LoggedServiceManager extends BaseServiceManager
             }
 
             // service locator aware - maybe the dependency was pulled later on
-            if ($methodCall['object'] instanceof ServiceLocatorAwareInterface) {
+            if (
+                $methodCall['object'] instanceof ServiceLocatorAwareInterface
+                || $methodCall['object'] instanceof ServiceManagerAwareInterface
+            ) {
                 $oid = spl_object_hash($methodCall['object']);
 
                 if (isset($this->instanceHashes[$oid])) {
