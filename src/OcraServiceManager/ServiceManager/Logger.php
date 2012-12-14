@@ -132,7 +132,7 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param  object $instance
+     * @param object $instance
      *
      * @return array[]
      */
@@ -159,7 +159,7 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param  object $instance
+     * @param object $instance
      *
      * @return array
      */
@@ -221,7 +221,7 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param  string $canonicalName
+     * @param string $canonicalName
      *
      * @return array
      */
@@ -254,7 +254,7 @@ class Logger implements ListenerAggregateInterface
      * @param array $tracedCallInfo the element of {@see self::tracedCalls}
      *                       of which we're looking for a parent dependant service
      *
-     * @return array|null           null if a dependant service could not be found, the element
+     * @return array|null null if a dependant service could not be found, the element
      *                              in {@see self::tracedCalls} otherwise
      */
     protected function getParentRequestingService($tracedCallInfo)
@@ -269,7 +269,7 @@ class Logger implements ListenerAggregateInterface
             if (
                 $methodCall['object'] instanceof ServiceLocatorAwareInterface
                 || $methodCall['object'] instanceof ServiceManagerAwareInterface
-            ) {
+) {
                 foreach ($this->tracedCalls as $tracedCall) {
                     if ($tracedCall['instance'] === $methodCall['object']) {
                         return $tracedCall;
@@ -302,7 +302,7 @@ class Logger implements ListenerAggregateInterface
                 if (
                     $tracedCall['service_locator'] === $methodCall['object']
                     && $tracedCall['requested_name'] === $rName
-                ) {
+) {
                     return $tracedCall;
                 }
             }

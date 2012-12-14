@@ -250,7 +250,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEmpty($this->listener->getDependingInstances($instance));
 
-
         $dependencies1 = $this->listener->getDependencyInstances($instance);
         $this->assertCount(1, $dependencies1);
         $this->assertSame($dependencies1[0]['instance'], $dependency1);
