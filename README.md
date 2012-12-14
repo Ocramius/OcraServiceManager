@@ -5,10 +5,11 @@
 OcraServiceManager is a Zend Framework 2 Module that decorates `Zend\ServiceManager\ServiceManager`
 with the ability to generate lazily initialized service proxies.
 
-It also provides aid in logging what is happening between your dependencies, allowing you to produce
-dependency graphs such as the following:
+It also integrates with [ZendDeveloperTools](https://github.com/zendframework/ZendDeveloperTools) 
+to provide aid in logging what is happening between your dependencies, allowing you to produce
+dependency graphs such as the following one:
 
-![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/4d323f6f.png)
+![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/1c92f6a5.png)
 
 It is **heavily tested** and supports proxying of any possible object type.
 
