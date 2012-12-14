@@ -42,6 +42,11 @@ class ZDTCollector implements CollectorInterface, Serializable
     protected $collectedServices = array();
 
     /**
+     * @var array of collected service locators with their dependencies
+     */
+    protected $collectedServiceLocators = array();
+
+    /**
      * Collector priority
      */
     const PRIORITY = 15;
@@ -77,7 +82,8 @@ class ZDTCollector implements CollectorInterface, Serializable
      */
     public function collect(MvcEvent $mvcEvent)
     {
-        $this->collectedServices = $this->logger->getLoggedServices();
+        $this->collectedServices        = $this->logger->getLoggedServices();
+        $this->collectedServiceLocators = $this->logger->getLoggedServiceLocators();
     }
 
     /**
@@ -87,6 +93,7 @@ class ZDTCollector implements CollectorInterface, Serializable
     {
         return serialize(array(
             'collectedServices' => $this->collectedServices,
+            'collectedServiceLocators' => $this->collectedServiceLocators,
         ));
     }
 
@@ -95,8 +102,9 @@ class ZDTCollector implements CollectorInterface, Serializable
      */
     public function unserialize($serialized)
     {
-        $data                    = unserialize($serialized);
-        $this->collectedServices = $data['collectedServices'];
+        $data                           = unserialize($serialized);
+        $this->collectedServices        = $data['collectedServices'];
+        $this->collectedServiceLocators = $data['collectedServiceLocators'];
     }
 
     /**
@@ -107,5 +115,15 @@ class ZDTCollector implements CollectorInterface, Serializable
     public function getServices()
     {
         return $this->collectedServices;
+    }
+
+    /**
+     * Retrieves details of collected service locators as of {@see LoggedServiceManager::getLoggedServiceLocators}
+     *
+     * @return array
+     */
+    public function getServiceLocators()
+    {
+        return $this->collectedServiceLocators;
     }
 }

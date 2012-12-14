@@ -172,6 +172,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      * @covers \OcraServiceManager\ServiceManager\Logger::getDependingInstances
      * @covers \OcraServiceManager\ServiceManager\Logger::getDependencyInstances
      * @covers \OcraServiceManager\ServiceManager\Logger::getParentRequestingService
+     * @covers \OcraServiceManager\ServiceManager\Logger::getLoggedServiceLocators
      */
     public function testGetDependingInstances()
     {
@@ -259,6 +260,115 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($dependencies2[0]['instance'], $dependency2);
 
         $this->assertEmpty($this->listener->getDependencyInstances($dependency2));
+        $serviceLocators = $this->listener->getLoggedServiceLocators();
+        $this->assertCount(1, $serviceLocators);
+        $this->assertArrayHasKey(spl_object_hash($locator), $serviceLocators);
+    }
+
+    /**
+     * @covers \OcraServiceManager\ServiceManager\Logger::getDependingInstances
+     * @covers \OcraServiceManager\ServiceManager\Logger::getDependencyInstances
+     * @covers \OcraServiceManager\ServiceManager\Logger::getParentRequestingService
+     */
+    public function testGetDependingInstancesOnMultipleLocators()
+    {
+        $locator1 = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
+        $locator2 = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
+
+        $dependency1 = new \stdClass();
+        $instance1   = new \stdClass();
+        $dependency2 = new \stdClass();
+        $instance2   = new \stdClass();
+
+        $this->listener->registerServiceCall(
+            $locator1,
+            $dependency1,
+            'dependency-canonical-name',
+            'dependency\\requested\\name',
+            'create',
+            array(
+                 array(
+                     'object'   => $locator1,
+                     'function' => 'get',
+                     'args'     => array('dependency\\requested\\name'),
+                 ),
+                 array(
+                     'object'   => $locator1,
+                     'function' => 'get',
+                     'args'     => array('instance\\requested\\name'),
+                 ),
+            )
+        );
+        $this->listener->registerServiceCall(
+            $locator1,
+            $instance1,
+            'instance-canonical-name',
+            'instance\\requested\\name',
+            'create',
+            array(
+                 array(
+                     'object'   => $locator1,
+                     'function' => 'get',
+                     'args'     => array('instance\\requested\\name'),
+                 ),
+            )
+        );
+        $this->listener->registerServiceCall(
+            $locator2,
+            $dependency2,
+            'dependency-canonical-name',
+            'dependency\\requested\\name',
+            'create',
+            array(
+                 array(
+                     'object'   => $locator2,
+                     'function' => 'get',
+                     'args'     => array('dependency\\requested\\name'),
+                 ),
+                 array(
+                     'object'   => $locator2,
+                     'function' => 'get',
+                     'args'     => array('instance\\requested\\name'),
+                 ),
+            )
+        );
+        $this->listener->registerServiceCall(
+            $locator2,
+            $instance2,
+            'instance-canonical-name',
+            'instance\\requested\\name',
+            'create',
+            array(
+                 array(
+                     'object'   => $locator1,
+                     'function' => 'get',
+                     'args'     => array('instance\\requested\\name'),
+                 ),
+            )
+        );
+
+        $depending1 = $this->listener->getDependingInstances($dependency1);
+        $this->assertCount(1, $depending1);
+        $this->assertSame($instance1, $depending1[0]['instance']);
+        $this->assertEmpty($this->listener->getDependingInstances($instance1));
+
+        $dependencies1 = $this->listener->getDependencyInstances($instance1);
+        $this->assertCount(1, $dependencies1);
+        $this->assertSame($dependency1, $dependencies1[0]['instance']);
+        $this->assertEmpty($this->listener->getDependencyInstances($dependency1));
+
+        $depending2 = $this->listener->getDependingInstances($dependency2);
+        $this->assertCount(1, $depending2);
+        $this->assertSame($instance2, $depending2[0]['instance']);
+        $this->assertEmpty($this->listener->getDependingInstances($instance2));
+
+        $dependencies2 = $this->listener->getDependencyInstances($instance2);
+        $this->assertCount(1, $dependencies2);
+        $this->assertSame($dependency2, $dependencies2[0]['instance']);
+        $this->assertEmpty($this->listener->getDependencyInstances($dependency2));
+
+        $locators = $this->listener->getLoggedServiceLocators();
+        $this->assertCount(2, $locators);
     }
 
     /**

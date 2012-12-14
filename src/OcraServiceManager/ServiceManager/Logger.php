@@ -322,6 +322,7 @@ class Logger implements ListenerAggregateInterface
      *  * service_instantiation_idx: index of this instance across all instances of the same service
      *  * dependencies: array of object hashes of dependencies
      *  * depending: array of object hashes of depending services
+     *  * service_locator: {@see spl_object_hash} of the providing service locator
      *
      * @return array
      */
@@ -347,6 +348,7 @@ class Logger implements ListenerAggregateInterface
                     'accesses'                  => 0,
                     'hash'                      => $oid,
                     'service_instantiation_idx' => $serviceNames[$tracedCall['canonical_name']],
+                    'service_locator'           => spl_object_hash($tracedCall['service_locator']),
                 );
 
                 $dependenciesCalls = $this->getDependencyInstances($instance);
@@ -376,5 +378,20 @@ class Logger implements ListenerAggregateInterface
         }
 
         return $loggedServices;
+    }
+
+    /**
+     * @return string[] service locator class names indexed by object hash
+     */
+    public function getLoggedServiceLocators()
+    {
+        $serviceLocators = array();
+
+        foreach ($this->tracedCalls as $tracedCall) {
+            $serviceLocator = $tracedCall['service_locator'];
+            $serviceLocators[spl_object_hash($serviceLocator)] = get_class($serviceLocator);
+        }
+
+        return $serviceLocators;
     }
 }
