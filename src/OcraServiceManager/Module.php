@@ -52,8 +52,11 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewH
     public function getViewHelperConfig()
     {
         return array(
-            'factories' => array(
-                'yumlUrl' => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
+            'invokables' => array(
+                'x11LikeColor' => 'OcraServiceManager\\View\\Helper\\X11LikeColor',
+            ),
+            'factories'  => array(
+                'yumlUrl'      => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
             ),
         );
     }

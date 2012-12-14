@@ -19,32 +19,32 @@
 namespace OcraServiceManagerTest\View\Helper;
 
 use PHPUnit_Framework_TestCase;
-use OcraServiceManager\View\Helper\X11Color;
+use OcraServiceManager\View\Helper\X11LikeColor;
 
 /**
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class X11ColorTest extends PHPUnit_Framework_TestCase
+class X11LikeColorTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var X11Color
+     * @var X11LikeColor
      */
     protected $helper;
 
     /**
      * {@inheritDoc}
      *
-     * @covers \OcraServiceManager\View\Helper\X11Color
+     * @covers \OcraServiceManager\View\Helper\X11LikeColor
      */
     public function setUp()
     {
         parent::setUp();
-        $this->helper = new X11Color();
+        $this->helper = new X11LikeColor();
     }
 
     /**
-     * @covers \OcraServiceManager\View\Helper\X11Color::getRandomColor
+     * @covers \OcraServiceManager\View\Helper\X11LikeColor::getRandomColor
      */
     public function testGetRandomColorGetsDifferentColors()
     {
@@ -62,14 +62,14 @@ class X11ColorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \OcraServiceManager\View\Helper\X11Color::getRandomColor
+     * @covers \OcraServiceManager\View\Helper\X11LikeColor::getRandomColor
      */
     public function testGetRandomColorGetsSameColorsWithSameSeed()
     {
         $color1 = $this->helper->getRandomColor(1);
         $color2 = $this->helper->getRandomColor(1);
-        $color3 = $this->helper->getRandomColor(2);
-        $color4 = $this->helper->getRandomColor(2);
+        $color3 = $this->helper->getRandomColor(10);
+        $color4 = $this->helper->getRandomColor(10);
 
         $this->assertInternalType('string', $color1);
         $this->assertInternalType('string', $color2);

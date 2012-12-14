@@ -1,18 +1,38 @@
 <?php
-    /* @var $collector \OcraServiceManager\ServiceManager\ZDTCollector */
-    $collector = $this->collector;
-    $services  = $collector->getServices();
-    $yumlData  = array();
+/* @var $collector \OcraServiceManager\ServiceManager\ZDTCollector */
+$services        = $collector->getServices();
+$serviceLocators = $collector->getServiceLocators();
+/* @var $x11Color \OcraServiceManager\View\Helper\X11LikeColor */
+$x11Color        = $this->x11LikeColor();
+$yumlData        = array();
+$i               = 0;
 
-    foreach ($services as $oid => $service) {
-        $prettyName = $services[$oid]['canonical_name'] . '(' . $services[$oid]['service_instantiation_idx'] . ')';
-        $yumlData[$prettyName] = array('dependencies' => array());
+$notes = array();
 
-        foreach ($service['dependencies'] as $key => $dependency) {
-            $yumlData[$prettyName]['dependencies'][] = $services[$dependency]['canonical_name']
-                . '(' . $services[$dependency]['service_instantiation_idx'] . ')';
-        }
+foreach ($serviceLocators as $oid => $locator) {
+    $i += 1;
+    $serviceLocators[$oid] = array(
+        'index' => $i,
+        'class' => $locator,
+    );
+    $notes[] = '[note: ' . $locator . '{bg:' . $x11Color->getRandomColor($i) . '}]';
+}
+
+$notes = implode(',', $notes);
+
+foreach ($services as $oid => $service) {
+    $color = $x11Color->getRandomColor($serviceLocators[$services[$oid]['service_locator']]['index']);
+    $prettyName            = $services[$oid]['canonical_name']
+        . '(' . $services[$oid]['service_instantiation_idx'] . '){bg:' . $color . '}';
+    $yumlData[$prettyName] = array('dependencies' => array());
+
+    foreach ($service['dependencies'] as $key => $dependency) {
+        $color = $x11Color->getRandomColor($serviceLocators[$services[$dependency]['service_locator']]['index']);
+        $yumlData[$prettyName]['dependencies'][] = $services[$dependency]['canonical_name']
+            . '(' . $services[$dependency]['service_instantiation_idx'] . '){bg:' . $color . '}';
     }
+}
+//die(var_dump($yumlData));
 ?>
 <div class="zdt-toolbar-entry">
     <div class="zdt-toolbar-preview">
@@ -44,7 +64,7 @@
                     echo $this->url('ocra_service_manager_yuml', array());
                 ?>" target="_blank">
                     <input type="hidden" name="dsl_text" value="<?php
-                        echo $this->escapeHtmlAttr($this->yumlUrl()->getUrl($yumlData));
+                        echo $this->escapeHtmlAttr($notes . ',' . $this->yumlUrl()->getUrl($yumlData));
                     ?>"/>
                     <input type="submit" value="Dependency Graph"/>
                 </form>
