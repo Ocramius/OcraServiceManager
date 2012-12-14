@@ -44,7 +44,7 @@ class Logger implements ListenerAggregateInterface
     /**
      * Traces of instantiated objects, indexed by object hash
      *
-     * @var array[] created services traces indexed by created object hash
+     * @var array[] created services traces
      */
     protected $tracedCalls = array();
 
@@ -75,6 +75,11 @@ class Logger implements ListenerAggregateInterface
         }
     }
 
+    /**
+     * @param EventInterface $event
+     *
+     * @return array|bool
+     */
     public function logServiceLocatorGet(EventInterface $event)
     {
         return $this->registerServiceCall(
@@ -87,6 +92,11 @@ class Logger implements ListenerAggregateInterface
         );
     }
 
+    /**
+     * @param EventInterface $event
+     *
+     * @return array|bool
+     */
     public function logServiceManagerCreate(EventInterface $event)
     {
         return $this->registerServiceCall(
@@ -122,6 +132,63 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
+     * @param object $instance
+     *
+     * @return array[]
+     */
+    public function getDependingInstances($instance)
+    {
+        $relevantTracedCalls = array_filter(
+            $this->tracedCalls,
+            function ($tracedCallInfo) use ($instance) {
+                return $tracedCallInfo['instance'] === $instance;
+            }
+        );
+
+        $dependingServices = array();
+
+        foreach ($relevantTracedCalls as $tracedCallInfo) {
+            $parent = $this->getParentRequestingService($tracedCallInfo);
+
+            if ($parent) {
+                $dependingServices[] = $parent;
+            }
+        }
+
+        return $dependingServices;
+    }
+
+    /**
+     * @param object $instance
+     *
+     * @return array
+     */
+    public function getDependencyInstances($instance)
+    {
+        $calls = array();
+
+        foreach ($this->tracedCalls as $call) {
+            $oid = spl_object_hash($call['instance']);
+
+            $calls[$oid] = $call;
+        }
+
+        $dependencies = array();
+
+        foreach ($calls as $call) {
+            $dependingServices = $this->getDependingInstances($call['instance']);
+
+            foreach ($dependingServices as $depending) {
+                if ($depending['instance'] === $instance) {
+                    $dependencies[] = $call;
+                }
+            }
+        }
+
+        return $dependencies;
+    }
+
+    /**
      * Retrieves the canonical names of the services that need $service
      *
      * @param  string     $canonicalName
@@ -153,6 +220,11 @@ class Logger implements ListenerAggregateInterface
         return $dependingServices;
     }
 
+    /**
+     * @param string $canonicalName
+     *
+     * @return array
+     */
     public function getDependencies($canonicalName)
     {
         $services = array();
@@ -182,8 +254,8 @@ class Logger implements ListenerAggregateInterface
      * @param array $tracedCallInfo the element of {@see self::tracedCalls}
      *                       of which we're looking for a parent dependant service
      *
-     * @return array|boolean false if a dependant service could not be found, the element
-     *                             in {@see self::tracedCalls} otherwise
+     * @return array|null null if a dependant service could not be found, the element
+     *                              in {@see self::tracedCalls} otherwise
      */
     protected function getParentRequestingService($tracedCallInfo)
     {
@@ -236,43 +308,90 @@ class Logger implements ListenerAggregateInterface
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Retrieves an array with information about logged service instances,
-     * with keys being the canonical names of the services.
+     * with keys being the object hashes of instantiated services.
+     * Each of the values contains following keys:
+     *  * canonical_name: canonical name for the service
+     *  * names: names used to retrieve the service
+     *  * accesses: number of times the object was retrieved through a locator
+     *  * hash: {@see spl_object_hash} of the object
+     *  * service_instantiation_idx: index of this instance across all instances of the same service
+     *  * dependencies: array of object hashes of dependencies
+     *  * depending: array of object hashes of depending services
+     *  * service_locator: {@see spl_object_hash} of the providing service locator
      *
      * @return array
      */
     public function getLoggedServices()
     {
         $loggedServices = array();
+        $serviceNames   = array();
 
         foreach ($this->tracedCalls as $tracedCall) {
-            $cName = $tracedCall['canonical_name'];
+            $instance = $tracedCall['instance'];
+            $oid      = spl_object_hash($instance);
 
-            if (!isset($loggedServices[$cName])) {
-                $loggedServices[$cName] = array(
-                    'names'     => array(),
-                    'accesses'  => 0,
-                    'instances' => array(),
+            if (!isset($loggedServices[$oid])) {
+                if (isset($serviceNames[$tracedCall['canonical_name']])) {
+                    $serviceNames[$tracedCall['canonical_name']] += 1;
+                } else {
+                    $serviceNames[$tracedCall['canonical_name']] = 1;
+                }
+
+                $loggedServices[$oid] = array(
+                    'canonical_name'            => $tracedCall['canonical_name'],
+                    'names'                     => array(),
+                    'accesses'                  => 0,
+                    'hash'                      => $oid,
+                    'service_instantiation_idx' => $serviceNames[$tracedCall['canonical_name']],
+                    'service_locator'           => spl_object_hash($tracedCall['service_locator']),
                 );
+
+                $dependenciesCalls = $this->getDependencyInstances($instance);
+                $dependingCalls    = $this->getDependingInstances($instance);
+
+                $dependencies = array();
+
+                foreach ($dependenciesCalls as $dependenciesCall) {
+                    $dependencies[spl_object_hash($dependenciesCall['instance'])] = true;
+                }
+
+                $loggedServices[$oid]['dependencies'] = array_keys($dependencies);
+
+                $depending = array();
+
+                foreach ($dependingCalls as $dependingCall) {
+                    $depending[spl_object_hash($dependingCall['instance'])] = true;
+                }
+
+                $loggedServices[$oid]['depending'] = array_keys($depending);
             }
 
-            $loggedServices[$cName]['names'] = array_unique(
-                array_merge(array($tracedCall['requested_name']), $loggedServices[$cName]['names'])
+            $loggedServices[$oid]['names'] = array_unique(
+                array_merge(array($tracedCall['requested_name']), $loggedServices[$oid]['names'])
             );
-            $loggedServices[$cName]['instances'][spl_object_hash($tracedCall['instance'])] = $tracedCall['instance'];
-            $loggedServices[$cName]['accesses'] += 1;
-        }
-
-        foreach ($loggedServices as $cName => $details) {
-            $loggedServices[$cName]['dependencies'] = $this->getDependencies($cName);
-            $loggedServices[$cName]['depending']    = $this->getDepending($cName);
-            $loggedServices[$cName]['instances']    = count($loggedServices[$cName]['instances']);
+            $loggedServices[$oid]['accesses'] += 1;
         }
 
         return $loggedServices;
+    }
+
+    /**
+     * @return string[] service locator class names indexed by object hash
+     */
+    public function getLoggedServiceLocators()
+    {
+        $serviceLocators = array();
+
+        foreach ($this->tracedCalls as $tracedCall) {
+            $serviceLocator = $tracedCall['service_locator'];
+            $serviceLocators[spl_object_hash($serviceLocator)] = get_class($serviceLocator);
+        }
+
+        return $serviceLocators;
     }
 }

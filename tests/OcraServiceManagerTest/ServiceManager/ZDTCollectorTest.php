@@ -63,8 +63,29 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
         $logger = $this->getMock('OcraServiceManager\ServiceManager\Logger');
         $collector = new ZDTCollector($logger);
         $logger->expects($this->any())->method('getLoggedServices')->will($this->returnValue(array('a' => array())));
+        $logger
+            ->expects($this->any())
+            ->method('getLoggedServiceLocators')
+            ->will($this->returnValue(array('b' => array())));
         $collector->collect($this->getMock('Zend\Mvc\MvcEvent'));
         $collector = unserialize(serialize($collector));
         $this->assertSame(array('a' => array()), $collector->getServices());
+        $this->assertSame(array('b' => array()), $collector->getServiceLocators());
+    }
+    /**
+     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::__construct
+     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::collect
+     * @covers \OcraServiceManager\ServiceManager\ZDTCollector::getServiceLocators
+     */
+    public function testGetServiceLocators()
+    {
+        $logger = $this->getMock('OcraServiceManager\ServiceManager\Logger');
+        $collector = new ZDTCollector($logger);
+        $logger
+            ->expects($this->any())
+            ->method('getLoggedServiceLocators')
+            ->will($this->returnValue(array('b' => array())));
+        $collector->collect($this->getMock('Zend\Mvc\MvcEvent'));
+        $this->assertSame(array('b' => array()), $collector->getServiceLocators());
     }
 }
