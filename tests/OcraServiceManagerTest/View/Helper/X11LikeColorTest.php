@@ -46,24 +46,6 @@ class X11LikeColorTest extends PHPUnit_Framework_TestCase
     /**
      * @covers \OcraServiceManager\View\Helper\X11LikeColor::getRandomColor
      */
-    public function testGetRandomColorGetsDifferentColors()
-    {
-        $color1 = $this->helper->getRandomColor();
-        $color2 = $this->helper->getRandomColor();
-        $color3 = $this->helper->getRandomColor();
-
-        $this->assertInternalType('string', $color1);
-        $this->assertInternalType('string', $color2);
-        $this->assertInternalType('string', $color3);
-
-        $this->assertNotSame($color1, $color2);
-        $this->assertNotSame($color2, $color3);
-        $this->assertNotSame($color1, $color3);
-    }
-
-    /**
-     * @covers \OcraServiceManager\View\Helper\X11LikeColor::getRandomColor
-     */
     public function testGetRandomColorGetsSameColorsWithSameSeed()
     {
         $color1 = $this->helper->getRandomColor(1);

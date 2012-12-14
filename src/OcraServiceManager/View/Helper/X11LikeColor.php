@@ -33,16 +33,16 @@ class X11LikeColor extends AbstractHelper
      */
     protected $colors = array(
         // custom colors
+        'white'                => array(255, 255, 255),
         'gold'                 => array(255, 215, 0),
-        'green'                => array(0, 255, 0),
         'red'                  => array(255, 0, 0),
         'blue'                 => array(0, 0, 255),
+        'green'                => array(0, 255, 0),
         'pink'                 => array(255, 192, 203),
-        'purple'               => array(160, 32, 240),
-        'white'                => array(255, 255, 255),
         'grey'                 => array(190, 190, 190),
         'cyan'                 => array(0, 255, 255),
         'yellow'               => array(255, 255, 0),
+        'purple'               => array(160, 32, 240),
         'brown'                => array(165, 42, 42),
         'orange'               => array(255, 165, 0),
         'coral'                => array(255, 127, 80),
@@ -59,13 +59,9 @@ class X11LikeColor extends AbstractHelper
      */
     public function getRandomColor($seed = null)
     {
-        if ($seed !== null) {
-            mt_srand($seed);
-        }
-
+        $seed = (int) $seed;
         $keys = array_keys($this->colors);
-        $key  = mt_rand(0, count($keys) - 1);
 
-        return $keys[$key];
+        return $keys[$seed];
     }
 }
