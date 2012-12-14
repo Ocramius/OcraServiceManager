@@ -8,7 +8,7 @@ with the ability to generate lazily initialized service proxies.
 It also provides aid in logging what is happening between your dependencies, allowing you to produce
 dependency graphs such as the following:
 
-![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/695473bb.png)
+![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/4d323f6f.png)
 
 It is **heavily tested** and supports proxying of any possible object type.
 
