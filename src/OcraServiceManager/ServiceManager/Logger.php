@@ -127,7 +127,7 @@ class Logger implements ListenerAggregateInterface
             'requested_name'  => $requestedName,
             'canonical_name'  => $canonicalName,
             'method'          => $methodName,
-            'trace'           => $trace ?: debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT),
+            'trace'           => $trace ?: debug_backtrace(true),
         );
     }
 
