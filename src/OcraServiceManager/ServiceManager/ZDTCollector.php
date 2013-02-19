@@ -52,7 +52,7 @@ class ZDTCollector implements CollectorInterface, Serializable
     const PRIORITY = 15;
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param Logger $logger
      */
     public function __construct(Logger $logger)
     {
