@@ -93,15 +93,15 @@ class ServiceProxyAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * @param ProxyGenerator $proxyGenerator
+     * @param ServiceProxyGenerator $proxyGenerator
      */
-    public function setProxyGenerator(ProxyGenerator $proxyGenerator)
+    public function setProxyGenerator(ServiceProxyGenerator $proxyGenerator)
     {
         $this->proxyGenerator = $proxyGenerator;
     }
 
     /**
-     * @return ProxyGenerator
+     * @return ServiceProxyGenerator
      */
     public function getProxyGenerator()
     {

@@ -1,12 +1,13 @@
 {
     "name": "ocramius/ocra-service-manager",
-    "description": "ZF2 Service manager extensions to allow service proxies",
+    "description": "ZF2 Service manager extensions to allow service proxies and dependency graph generation",
     "type": "library",
     "license": "MIT",
     "tags": [
         "zend framework",
         "lazy loading",
-        "module"
+        "module",
+        "servicemanager"
     ],
     "homepage": "https://github.com/Ocramius/OcraServiceManager",
     "authors": [
@@ -18,10 +19,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "zendframework/zend-mvc": "2.*",
-        "zendframework/zend-servicemanager": "2.*",
-        "zendframework/zend-modulemanager": "2.*",
-        "doctrine/common": ">=2.4.x-dev"
+        "zendframework/zend-mvc":             "2.1.*",
+        "zendframework/zend-servicemanager":  "2.1.*",
+        "zendframework/zend-modulemanager":   "2.1.*",
+        "doctrine/common":                    ">=2.4.x-dev,<2.5.x-dev"
     },
     "require-dev": {
         "zendframework/zend-developer-tools": "dev-master"

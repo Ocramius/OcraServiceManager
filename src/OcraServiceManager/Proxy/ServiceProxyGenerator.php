@@ -20,6 +20,7 @@ namespace OcraServiceManager\Proxy;
 
 use Doctrine\Common\Proxy\ProxyGenerator;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Util\ClassUtils;
 
 /**
  * Proxy generator responsible of creating proxy classes that delegate method calls to a wrapped service
@@ -32,34 +33,63 @@ class ServiceProxyGenerator extends ProxyGenerator
     const DEFAULT_SERVICE_PROXY_NS = 'OcraServiceManagerProxy\\Proxy';
 
     /**
+     * @var string
+     */
+    protected $proxyNamespace;
+
+    /**
      * {@inheritDoc}
      *
      * @param string|null $proxyDir
-     * @param string|null $proxyNs
+     * @param string|null $proxyNamespace
      */
-    public function __construct($proxyDir = null, $proxyNs = null)
+    public function __construct($proxyDir = null, $proxyNamespace = null)
     {
-        $proxyDir = $proxyDir ?: sys_get_temp_dir();
-        $proxyNs  = $proxyNs  ?: static::DEFAULT_SERVICE_PROXY_NS;
+        $this->proxyNamespace = $proxyNamespace  ?: static::DEFAULT_SERVICE_PROXY_NS;
 
-        parent::__construct($proxyDir, $proxyNs);
+        parent::__construct($proxyDir ?: sys_get_temp_dir(), $this->proxyNamespace);
 
-        $this->setPlaceholders(array(
-            '<magicGet>'             => array($this, 'generateMagicGet'),
-            '<magicSet>'             => array($this, 'generateMagicSet'),
-            '<magicIsset>'           => array($this, 'generateMagicIsset'),
-            '<sleepImpl>'            => array($this, 'generateSleepImpl'),
-            '<wakeupImpl>'           => array($this, 'generateWakeupImpl'),
-            '<cloneImpl>'            => array($this, 'generateCloneImpl'),
-            '<methods>'              => array($this, 'generateMethods'),
-            '<additionalProperties>' => <<<'EOT'
+        $placeholders = array(
+            'magicGet'             => array($this, 'generateMagicGet'),
+            'magicSet'             => array($this, 'generateMagicSet'),
+            'magicIsset'           => array($this, 'generateMagicIsset'),
+            'sleepImpl'            => array($this, 'generateSleepImpl'),
+            'wakeupImpl'           => array($this, 'generateWakeupImpl'),
+            'cloneImpl'            => array($this, 'generateCloneImpl'),
+            'methods'              => array($this, 'generateMethods'),
+        );
+
+        foreach ($placeholders as $name => $callback) {
+            $this->setPlaceholder(
+                $name,
+                function ($metadata) use ($callback) {
+                    return call_user_func($callback, $metadata);
+                }
+            );
+        }
+
+        $this->setPlaceholder(
+            'additionalProperties',
+            <<<'EOT'
 
     /**
      * @var object wrapped object to which method calls will be forwarded"
      */
     public $__wrappedObject__;
 EOT
-        ));
+        );
+    }
+
+    /**
+     * Generate the proxy class name for the given class name
+     *
+     * @param  string $className
+     *
+     * @return string
+     */
+    public function getProxyClassName($className)
+    {
+        return ClassUtils::generateProxyClassName($className, $this->proxyNamespace);
     }
 
     /**
