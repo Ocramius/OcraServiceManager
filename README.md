@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/Ocramius/OcraServiceManager.png?branch=master)](https://travis-ci.org/Ocramius/OcraServiceManager)
+[![Build Status](https://secure.travis-ci.org/Ocramius/OcraServiceManager.png?branch=master)](https://travis-ci.org/Ocramius/OcraServiceManager) [![Dependency Status](https://www.versioneye.com/package/php--ocramius--ocra-service-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--ocra-service-manager)
 
 # OcraServiceManager
 
