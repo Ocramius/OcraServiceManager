@@ -19,9 +19,11 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "zendframework/zend-mvc":             "2.1.*",
-        "zendframework/zend-servicemanager":  "2.1.*",
-        "zendframework/zend-modulemanager":   "2.1.*",
+        "zendframework/zend-mvc":             "2.2.*",
+        "zendframework/zend-servicemanager":  "2.2.*",
+        "zendframework/zend-modulemanager":   "2.2.*",
+        "zendframework/zend-http":            "2.2.*",
+        "zendframework/zend-config":          "2.2.*",
         "doctrine/common":                    ">=2.4.x-dev,<2.5.x-dev"
     },
     "require-dev": {
