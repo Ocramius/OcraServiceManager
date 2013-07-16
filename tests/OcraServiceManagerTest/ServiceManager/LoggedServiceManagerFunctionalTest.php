@@ -114,7 +114,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddAbstractFactory()
     {
-        $this->serviceManager->addAbstractFactory('ZendTest\ServiceManager\TestAsset\FooAbstractFactory');
+        $this->serviceManager->addAbstractFactory('OcraServiceManagerTestAsset\ServiceManager\FooAbstractFactory');
 
         $ret = $this->serviceManager->addAbstractFactory(new TestAsset\FooAbstractFactory());
         $this->assertSame($this->serviceManager, $ret);
@@ -182,7 +182,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetSharedAbstractFactory()
     {
-        $this->serviceManager->addAbstractFactory('ZendTest\ServiceManager\TestAsset\FooAbstractFactory');
+        $this->serviceManager->addAbstractFactory('OcraServiceManagerTestAsset\ServiceManager\FooAbstractFactory');
         $ret = $this->serviceManager->setShared('foo', false);
         $this->assertSame($this->serviceManager, $ret);
     }
@@ -299,8 +299,8 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateWithInvokableClass()
     {
-        $this->serviceManager->setInvokableClass('foo', 'ZendTest\ServiceManager\TestAsset\Foo');
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Foo', $this->serviceManager->get('foo'));
+        $this->serviceManager->setInvokableClass('foo', 'OcraServiceManagerTestAsset\ServiceManager\Foo');
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Foo', $this->serviceManager->get('foo'));
     }
 
     /**
@@ -308,8 +308,8 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateWithFactoryInstance()
     {
-        $this->serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Foo', $this->serviceManager->get('foo'));
+        $this->serviceManager->setFactory('foo', 'OcraServiceManagerTestAsset\ServiceManager\FooFactory');
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Foo', $this->serviceManager->get('foo'));
     }
 
     /**
@@ -329,8 +329,8 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateWithAbstractFactory()
     {
-        $this->serviceManager->addAbstractFactory('ZendTest\ServiceManager\TestAsset\FooAbstractFactory');
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Foo', $this->serviceManager->get('foo'));
+        $this->serviceManager->addAbstractFactory('OcraServiceManagerTestAsset\ServiceManager\FooAbstractFactory');
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Foo', $this->serviceManager->get('foo'));
     }
 
     /**
@@ -338,10 +338,10 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateWithMultipleAbstractFactories()
     {
-        $this->serviceManager->addAbstractFactory('ZendTest\ServiceManager\TestAsset\BarAbstractFactory');
-        $this->serviceManager->addAbstractFactory('ZendTest\ServiceManager\TestAsset\FooAbstractFactory');
+        $this->serviceManager->addAbstractFactory('OcraServiceManagerTestAsset\ServiceManager\BarAbstractFactory');
+        $this->serviceManager->addAbstractFactory('OcraServiceManagerTestAsset\ServiceManager\FooAbstractFactory');
 
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Bar', $this->serviceManager->get('bar'));
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Bar', $this->serviceManager->get('bar'));
     }
 
     public function testCreateWithInitializerObject()
@@ -466,7 +466,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $config = new Config(array(
             'invokables' => array(
-                'foo' => 'ZendTest\ServiceManager\TestAsset\Foo',
+                'foo' => 'OcraServiceManagerTestAsset\ServiceManager\Foo',
             ),
         ));
         $serviceManager = new LoggedServiceManager(
@@ -474,41 +474,41 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
             new BaseServiceManager($config)
         );
         $foo = $serviceManager->get('foo');
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Foo', $foo);
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Foo', $foo);
     }
 
     public function testPeeringService()
     {
         $di = new Di();
-        $di->instanceManager()->setParameters('ZendTest\ServiceManager\TestAsset\Bar', array('foo' => array('a')));
+        $di->instanceManager()->setParameters('OcraServiceManagerTestAsset\ServiceManager\Bar', array('foo' => array('a')));
         $this->serviceManager->addAbstractFactory(new DiAbstractServiceFactory($di));
         $sm = $this->serviceManager->createScopedServiceManager(BaseServiceManager::SCOPE_PARENT);
         $sm->setFactory('di', new DiFactory());
-        $bar = $sm->get('ZendTest\ServiceManager\TestAsset\Bar', true);
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Bar', $bar);
+        $bar = $sm->get('OcraServiceManagerTestAsset\ServiceManager\Bar', true);
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Bar', $bar);
     }
 
     public function testDiAbstractServiceFactory()
     {
         $di = $this->getMock('Zend\Di\Di');
         $factory = new DiAbstractServiceFactory($di);
-        $factory->instanceManager()->setConfig('ZendTest\ServiceManager\TestAsset\Bar', array('parameters' => array('foo' => array('a'))));
+        $factory->instanceManager()->setConfig('OcraServiceManagerTestAsset\ServiceManager\Bar', array('parameters' => array('foo' => array('a'))));
         $this->serviceManager->addAbstractFactory($factory);
 
-        $this->assertTrue($this->serviceManager->has('ZendTest\ServiceManager\TestAsset\Bar', true));
+        $this->assertTrue($this->serviceManager->has('OcraServiceManagerTestAsset\ServiceManager\Bar', true));
 
-        $bar = $this->serviceManager->get('ZendTest\ServiceManager\TestAsset\Bar', true);
-        $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\Bar', $bar);
+        $bar = $this->serviceManager->get('OcraServiceManagerTestAsset\ServiceManager\Bar', true);
+        $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\Bar', $bar);
     }
 
     public function testExceptionThrowingFactory()
     {
-        $this->serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\ExceptionThrowingFactory');
+        $this->serviceManager->setFactory('foo', 'OcraServiceManagerTestAsset\ServiceManager\ExceptionThrowingFactory');
         try {
             $this->serviceManager->get('foo');
             $this->fail("No exception thrown");
         } catch (Exception\ServiceNotCreatedException $e) {
-            $this->assertInstanceOf('ZendTest\ServiceManager\TestAsset\FooException', $e->getPrevious());
+            $this->assertInstanceOf('OcraServiceManagerTestAsset\ServiceManager\FooException', $e->getPrevious());
         }
     }
 
@@ -519,14 +519,14 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $config = new Config(array(
             'abstract_factories' => array(
-                'ZendTest\ServiceManager\TestAsset\FooAbstractFactory',
+                'OcraServiceManagerTestAsset\ServiceManager\FooAbstractFactory',
             ),
         ));
         $serviceManager = new LoggedServiceManager(
             $this->getMock('Zend\\EventManager\\EventManagerInterface'),
             new BaseServiceManager($config)
         );
-        $serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
+        $serviceManager->setFactory('foo', 'OcraServiceManagerTestAsset\ServiceManager\FooFactory');
         $serviceManager->get('unknownObject');
     }
 
@@ -542,11 +542,11 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
             $this->getMock('Zend\\EventManager\\EventManagerInterface'),
             new BaseServiceManager()
         );
-        $serviceManager->setFactory('ZendTest\ServiceManager\TestAsset\Bar', $factory);
+        $serviceManager->setFactory('OcraServiceManagerTestAsset\ServiceManager\Bar', $factory);
         $di = new Di();
-        $di->instanceManager()->setParameters('ZendTest\ServiceManager\TestAsset\Bar', array('foo' => array('a')));
+        $di->instanceManager()->setParameters('OcraServiceManagerTestAsset\ServiceManager\Bar', array('foo' => array('a')));
         $serviceManager->addAbstractFactory(new DiAbstractServiceFactory($di));
-        $serviceManager->get('ZendTest\ServiceManager\TestAsset\Bar');
+        $serviceManager->get('OcraServiceManagerTestAsset\ServiceManager\Bar');
     }
 
     /**
@@ -554,7 +554,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testAssignAliasWithExistingServiceName()
     {
-        $this->serviceManager->setFactory('foo', 'ZendTest\ServiceManager\TestAsset\FooFactory');
+        $this->serviceManager->setFactory('foo', 'OcraServiceManagerTestAsset\ServiceManager\FooFactory');
         $this->serviceManager->setFactory('bar', function () {
             // not called
         });
@@ -581,7 +581,7 @@ class LoggedServiceManagerFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAllowAddingInitializersAsClassNames()
     {
-        $result = $this->serviceManager->addInitializer('ZendTest\ServiceManager\TestAsset\FooInitializer');
+        $result = $this->serviceManager->addInitializer('OcraServiceManagerTestAsset\ServiceManager\FooInitializer');
         $this->assertSame($this->serviceManager, $result);
     }
 

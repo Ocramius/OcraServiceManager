@@ -16,24 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace OcraServiceManagerTestAsset\ServiceManager;
 
-$files = array(__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php');
+use Zend\ServiceManager\AbstractFactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+class BarAbstractFactory implements AbstractFactoryInterface
+{
+    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        if ($name != 'bar') {
+            return false;
+        }
+        return true;
+    }
 
-        break;
+    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        return new Bar(array());
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
-}
-
-/* @var $loader \Composer\Autoload\ClassLoader */
-$loader->add('OcraServiceManagerTest\\', __DIR__);
-$loader->add('OcraServiceManagerTestAsset\\', __DIR__);
-
-unset($files, $file, $loader);

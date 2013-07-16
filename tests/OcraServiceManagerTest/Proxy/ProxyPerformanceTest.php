@@ -32,6 +32,8 @@ use OcraServiceManagerTest\TestAsset\ServiceLocatorAwareHelloWorld;
 /**
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
+ *
+ * @group Performance
  */
 class ProxyPerformanceTest extends PHPUnit_Framework_TestCase
 {

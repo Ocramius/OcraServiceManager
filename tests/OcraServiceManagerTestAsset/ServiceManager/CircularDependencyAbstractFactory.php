@@ -16,24 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace OcraServiceManagerTestAsset\ServiceManager;
 
-$files = array(__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php');
+use Zend\ServiceManager\AbstractFactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+/**
+ * Class used to try to simulate a cyclic dependency in ServiceManager.
+ */
+class CircularDependencyAbstractFactory implements AbstractFactoryInterface
+{
+    public $expectedInstance = 'a retrieved value';
 
-        break;
+    /**
+     * {@inheritDoc}
+     */
+    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        if ($serviceLocator->has($name)) {
+            return $serviceLocator->get($name);
+        }
+
+        return $this->expectedInstance;
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
-}
-
-/* @var $loader \Composer\Autoload\ClassLoader */
-$loader->add('OcraServiceManagerTest\\', __DIR__);
-$loader->add('OcraServiceManagerTestAsset\\', __DIR__);
-
-unset($files, $file, $loader);
