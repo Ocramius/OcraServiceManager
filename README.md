@@ -1,5 +1,3 @@
-[![Build Status](https://secure.travis-ci.org/Ocramius/OcraServiceManager.png?branch=master)](https://travis-ci.org/Ocramius/OcraServiceManager) [![Dependency Status](https://www.versioneye.com/package/php--ocramius--ocra-service-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--ocra-service-manager)
-
 # OcraServiceManager
 
 OcraServiceManager is a Zend Framework 2 Module that decorates `Zend\ServiceManager\ServiceManager`
@@ -10,6 +8,12 @@ to provide aid in logging what is happening between your dependencies, allowing 
 dependency graphs such as the following one:
 
 ![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/1c92f6a5.png)
+
+## Status
+
+| Tests | Releases | Downloads | Dependencies |
+| ----- | -------- | ------- | ------------- | --------- | ------------ |
+|[![Build Status](https://travis-ci.org/Ocramius/OcraServiceManager.png?branch=master)](https://travis-ci.org/Ocramius/OcraServiceManager) [![Coverage Status](https://coveralls.io/repos/Ocramius/OcraServiceManager/badge.png?branch=master)](https://coveralls.io/r/Ocramius/OcraServiceManager)|[![Latest Stable Version](https://poser.pugx.org/ocramius/ocra-service-manager/v/stable.png)](https://packagist.org/packages/ocramius/ocra-service-manager) [![Latest Unstable Version](https://poser.pugx.org/ocramius/ocra-service-manager/v/unstable.png)](https://packagist.org/packages/ocramius/ocra-service-manager)|[![Total Downloads](https://poser.pugx.org/ocramius/ocra-service-manager/downloads.png)](https://packagist.org/packages/ocramius/ocra-service-manager)|[![Dependency Status](https://www.versioneye.com/package/php--ocramius--ocra-service-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--ocra-service-manager)|
 
 It is **heavily tested** and supports proxying of any possible object type.
 
