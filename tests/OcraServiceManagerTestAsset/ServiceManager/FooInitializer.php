@@ -16,24 +16,30 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace OcraServiceManagerTestAsset\ServiceManager;
 
-$files = array(__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php');
+use Zend\ServiceManager\InitializerInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+class FooInitializer implements InitializerInterface
+{
+    public $sm;
 
-        break;
+    protected $var;
+
+    public function __construct($var = null)
+    {
+        if ($var) {
+            $this->var = $var;
+        }
+    }
+
+    public function initialize($instance, ServiceLocatorInterface $serviceLocator)
+    {
+        $this->sm = $serviceLocator;
+        if ($this->var) {
+            list($key, $value) = each($this->var);
+            $instance->{$key} = $value;
+        }
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
-}
-
-/* @var $loader \Composer\Autoload\ClassLoader */
-$loader->add('OcraServiceManagerTest\\', __DIR__);
-$loader->add('OcraServiceManagerTestAsset\\', __DIR__);
-
-unset($files, $file, $loader);
