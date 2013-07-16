@@ -9,16 +9,16 @@ dependency graphs such as the following one:
 
 ![Example Dependency Graph for a `OcraServiceManager\ServiceManager\LoggedServiceManager`](http://yuml.me/1c92f6a5.png)
 
+It is **heavily tested** and supports proxying of any possible object type.
+
+If you don't know what proxies are, you can read my article about
+[service proxies and why we need them](http://ocramius.github.com/blog/zf2-and-symfony-service-proxies-with-doctrine-proxies/).
+
 ## Status
 
 | Tests | Releases | Downloads | Dependencies |
 | ----- | -------- | ------- | ------------- | --------- | ------------ |
 |[![Build Status](https://travis-ci.org/Ocramius/OcraServiceManager.png?branch=master)](https://travis-ci.org/Ocramius/OcraServiceManager) [![Coverage Status](https://coveralls.io/repos/Ocramius/OcraServiceManager/badge.png?branch=master)](https://coveralls.io/r/Ocramius/OcraServiceManager)|[![Latest Stable Version](https://poser.pugx.org/ocramius/ocra-service-manager/v/stable.png)](https://packagist.org/packages/ocramius/ocra-service-manager) [![Latest Unstable Version](https://poser.pugx.org/ocramius/ocra-service-manager/v/unstable.png)](https://packagist.org/packages/ocramius/ocra-service-manager)|[![Total Downloads](https://poser.pugx.org/ocramius/ocra-service-manager/downloads.png)](https://packagist.org/packages/ocramius/ocra-service-manager)|[![Dependency Status](https://www.versioneye.com/package/php--ocramius--ocra-service-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--ocra-service-manager)|
-
-It is **heavily tested** and supports proxying of any possible object type.
-
-If you don't know what proxies are, you can read my article about
-[service proxies and why we need them](http://ocramius.github.com/blog/zf2-and-symfony-service-proxies-with-doctrine-proxies/).
 
 ## Installation
 
