@@ -68,31 +68,6 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \OcraServiceManager\ServiceManager::setProxyService
-     * @covers \OcraServiceManager\ServiceManager::create
-     * @covers \OcraServiceManager\ServiceManager::createRealService
-     */
-    public function testProxiedLazyService()
-    {
-        $this->serviceManager->setService(
-            'OcraServiceManager\Proxy\ServiceProxyAbstractFactory',
-            new ServiceProxyAbstractFactory(new Memory())
-        );
-        $service = $this->getMock('stdClass', array('proxiedMethod'));
-        $service->expects($this->once())->method('proxiedMethod')->will($this->returnValue('proxiedValue'));
-
-        $this->serviceManager->setService('Config', array());
-        $this->serviceManager->setService('OcraServiceManager\\Cache\\ServiceProxiesCache', new Memory());
-        $this->serviceManager->setFactory('LazyService', function () use ($service) { return $service; });
-        $this->serviceManager->setProxyService('LazyService');
-        $lazyService = $this->serviceManager->create('LazyService');
-
-        $this->assertInstanceOf(get_class($service), $lazyService);
-        $this->assertNotSame($service, $lazyService);
-        $this->assertSame('proxiedValue', $lazyService->proxiedMethod());
-    }
-
-    /**
      * @covers \OcraServiceManager\ServiceManager::setDefaultProxyFactory
      * @covers \OcraServiceManager\ServiceManager::setProxyService
      * @covers \OcraServiceManager\ServiceManager::create
