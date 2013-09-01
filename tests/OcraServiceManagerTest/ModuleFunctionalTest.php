@@ -53,9 +53,7 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
         $moduleManager->loadModules();
 
         /* @var $application \Zend\Mvc\Application */
-        try{
         $application        = $serviceManager->get('Application');
-        }catch(\Exception $e){do{var_dump($e->getMessage(), $e->getLine(), $e->getFile());}while($e = $e->getPrevious());die();}
         /* @var $ocraServiceManager \OcraServiceManager\ServiceManager */
         $ocraServiceManager = $serviceManager->get('ServiceManager');
 
