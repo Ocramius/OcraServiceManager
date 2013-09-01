@@ -42,8 +42,6 @@ class ServiceManagerFactory implements FactoryInterface
         $config = $serviceLocator->get('Config');
 
         if ($config['ocra_service_manager']['logged_service_manager']) {
-            /* @var $eventManager \Zend\EventManager\EventManagerInterface */
-            $eventManager = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
             /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
             $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
             /* @var $locatorInterceptors \Closure[] */
