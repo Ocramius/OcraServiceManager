@@ -36,7 +36,7 @@ class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
     {
         $factory                = new ApplicationFactory();
         $serviceManager         = new ServiceManager();
-        $replacedServiceManager = $this->getMock('OcraServiceManager\\ServiceManager', array(), array(), '', false);
+        $replacedServiceManager = $this->getMock('Zend\ServiceManager\ServiceManager');
         $request                = $this->getMock('Zend\StdLib\RequestInterface');
         $response               = $this->getMock('Zend\StdLib\ResponseInterface');
         $evm                    = $this->getMock('Zend\EventManager\EventManagerInterface');

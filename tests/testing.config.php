@@ -18,15 +18,6 @@
 
 return array(
     'ocra_service_manager' => array(
-        'cache' => array(
-            // memory adapter since we don't know if APC is available
-            'adapter' => 'memory',
-        ),
-    ),
-    'service_manager' => array(
-        'lazy_services' => array(
-            // using EventManager since it's heavily used
-            'EventManager',
-        ),
+        'logged_service_manager' => true,
     ),
 );

@@ -16,20 +16,9 @@
  * and is licensed under the MIT license.
  */
 
-use OcraServiceManager\Proxy\ServiceProxyGenerator;
-
 return array(
-    'service_manager' => array(
-        'lazy_services' => array(),
-    ),
     'ocra_service_manager' => array(
         'logged_service_manager'    => false,
-        'service_proxies_namespace' => ServiceProxyGenerator::DEFAULT_SERVICE_PROXY_NS,
-        'service_proxies_dir'       => getcwd() . '/data/service-proxies',
-        'service_proxies_cache'     => 'OcraServiceManager\\Cache\\ServiceProxyCache',
-        'cache'                     => array(
-            'adapter' => 'memory',
-        ),
     ),
 
     // zenddevelopertools specific settings

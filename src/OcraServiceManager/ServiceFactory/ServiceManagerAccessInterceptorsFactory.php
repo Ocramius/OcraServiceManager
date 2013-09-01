@@ -49,13 +49,23 @@ class ServiceManagerAccessInterceptorsFactory implements FactoryInterface
                 ? ServiceManagerEvent::EVENT_SERVICEMANAGER_CREATE
                 : ServiceManagerEvent::EVENT_SERVICEMANAGER_GET;
 
+            $serviceName = $params['name'];
+
+            if (is_array($serviceName)) {
+                list($canonicalName, $serviceName) = $serviceName;
+            } else {
+                $canonicalName = strtolower(
+                    strtr($serviceName, array('-' => '', '_' => '', ' ' => '', '\\' => '', '/' => ''))
+                );
+            }
+
             $eventManager->trigger(
                 new ServiceManagerEvent(
                     $eventName,
                     $proxy,
                     $returnValue,
-                    $params[0],
-                    strtolower(strtr($params[0], array('-' => '', '_' => '', ' ' => '', '\\' => '', '/' => '')))
+                    $serviceName,
+                    $canonicalName
                 )
             );
         };

@@ -31,50 +31,6 @@ use PHPUnit_Framework_TestCase;
 class ServiceManagerFactoryTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-
-    }
-
-    /**
-     * @covers \OcraServiceManager\ServiceFactory\ServiceManagerFactory::createService
-     */
-    public function testCreateService()
-    {
-        $factory        = new ServiceManagerFactory();
-        $serviceManager = new ServiceManager();
-
-        $serviceManager->setService(
-            'Config',
-            array(
-                'ocra_service_manager' => array(
-                    'logged_service_manager' => false,
-                ),
-                'service_manager' => array(
-                    'lazy_services' => array(
-                        'first-service',
-                        'second-service',
-                        'third-service' => 'with-factory',
-                    ),
-                ),
-            )
-        );
-
-        /* @var $service \OcraServiceManager\ServiceManager */
-        $service = $factory->createService($serviceManager);
-
-        $this->assertInstanceOf('OcraServiceManager\\ServiceManager', $service);
-
-        $proxyServices = $service->getProxyServices();
-
-        $this->assertCount(3, $proxyServices);
-        $this->assertSame('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyServices['firstservice']);
-        $this->assertSame('OcraServiceManager\Proxy\ServiceProxyAbstractFactory', $proxyServices['secondservice']);
-        $this->assertSame('with-factory', $proxyServices['thirdservice']);
-    }
-    /**
      * @covers \OcraServiceManager\ServiceFactory\ServiceManagerFactory::createService
      */
     public function testCreateLoggedServiceManager()

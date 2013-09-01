@@ -53,31 +53,27 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
         $moduleManager->loadModules();
 
         /* @var $application \Zend\Mvc\Application */
+        try{
         $application        = $serviceManager->get('Application');
+        }catch(\Exception $e){do{var_dump($e->getMessage(), $e->getLine(), $e->getFile());}while($e = $e->getPrevious());die();}
         /* @var $ocraServiceManager \OcraServiceManager\ServiceManager */
         $ocraServiceManager = $serviceManager->get('ServiceManager');
 
         $this->assertInstanceOf(
-            'OcraServiceManager\\ServiceManager',
+            'Zend\\ServiceManager\\ServiceManager',
             $ocraServiceManager,
-            'ServiceManager is an OcraServiceManager\\ServiceManager'
+            'ServiceManager is a valid service manager'
+        );
+        $this->assertInstanceOf(
+            'ProxyManager\\Proxy\\AccessInterceptorInterface',
+            $ocraServiceManager,
+            'ServiceManager is an access interceptor proxy'
         );
 
         $this->assertSame(
             $application->getServiceManager(),
             $ocraServiceManager,
             'The application service manager was replaced'
-        );
-        $this->assertInstanceOf(
-            'Doctrine\\Common\\Proxy\\Proxy',
-            $ocraServiceManager->get('EventManager'),
-            'EventManager is a generated proxy'
-        );
-        $this->assertInstanceOf(
-            'Zend\\Cache\\Storage\\StorageInterface',
-            $ocraServiceManager->get(
-                'OcraServiceManager\\Cache\\ServiceProxyCache'
-            )
         );
     }
 }

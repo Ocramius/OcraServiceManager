@@ -18,10 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use OcraServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use OcraServiceManager\ServiceManager\LoggedServiceManager;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Factory responsible of building an {@see OcraServiceManager\ServiceManager}
@@ -35,9 +34,10 @@ class ServiceManagerFactory implements FactoryInterface
      * Create an overloaded service manager
      *
      * @param  ServiceLocatorInterface $serviceLocator
-     * @return ServiceManager
+     * @param  string|null             $name
+     * @return ServiceLocatorInterface
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $serviceLocator, $name = null)
     {
         $config = $serviceLocator->get('Config');
 
@@ -47,20 +47,19 @@ class ServiceManagerFactory implements FactoryInterface
             /* @var $locatorInterceptors \Closure[] */
             $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
-            $serviceManager = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
-        } else {
-            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new ServiceManager($serviceLocator);
-        }
+            $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
 
-        foreach ($config['service_manager']['lazy_services'] as $lazyService => $factory) {
-            if (is_int($lazyService)) {
-                $serviceManager->setProxyService($factory);
-            } else {
-                $serviceManager->setProxyService($lazyService, $factory);
+            if ($name && $serviceLocator instanceof ServiceManager) {
+                // @todo this service hardcoding should be removed
+                $allowOverrides = $serviceLocator->getAllowOverride();
+                $serviceLocator->setAllowOverride(true);
+                $serviceLocator->setService('ServiceManager', $proxyLocator);
+                $serviceLocator->setAllowOverride($allowOverrides);
             }
+
+            return $proxyLocator;
         }
 
-        return $serviceManager;
+        return $serviceLocator;
     }
 }
