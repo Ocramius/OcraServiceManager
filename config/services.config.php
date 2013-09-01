@@ -21,15 +21,27 @@ return array(
         'OcraServiceManager\\ServiceManager\\Logger'            => 'OcraServiceManager\\ServiceManager\\Logger',
     ),
     'factories'  => array(
-        'Application'                                           => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
-        'ControllerPluginManager'                               => 'OcraServiceManager\\ServiceFactory\\ControllerPluginManagerFactory',
-        'ControllerLoader'                                      => 'OcraServiceManager\\ServiceFactory\\ControllerManagerFactory',
-        'ViewHelperManager'                                     => 'OcraServiceManager\\ServiceFactory\\ViewHelperPluginManagerFactory',
-        'OcraServiceManager\\ServiceManager\\EventManager'      => 'OcraServiceManager\\ServiceFactory\\EventManagerFactory',
+        'Application'
+            => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
+        'ControllerPluginManager'
+            => 'OcraServiceManager\\ServiceFactory\\ControllerPluginManagerFactory',
+        'ControllerLoader'
+            => 'OcraServiceManager\\ServiceFactory\\ControllerManagerFactory',
+        'ViewHelperManager'
+            => 'OcraServiceManager\\ServiceFactory\\ViewHelperPluginManagerFactory',
+        'OcraServiceManager\\ServiceManager\\EventManager'
+            => 'OcraServiceManager\\ServiceFactory\\EventManagerFactory',
         'OcraServiceManager\\View\\Helper\\YumlUrl'             => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-        'OcraServiceManager\\ServiceManager'                    => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
+        'OcraServiceManager\\ServiceManager'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
         'OcraServiceManager\\Cache\\ServiceProxyCache'          => 'OcraServiceManager\\ServiceFactory\\CacheFactory',
-        'OcraServiceManager\Proxy\ServiceProxyAbstractFactory'  => 'OcraServiceManager\\ServiceFactory\\ServiceProxyAbstractFactoryFactory',
-        'OcraServiceManager\\ServiceManager\\ZDTCollector'      => 'OcraServiceManager\\ServiceFactory\\ZDTCollectorFactory',
+        'OcraServiceManager\Proxy\ServiceProxyAbstractFactory'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceProxyAbstractFactoryFactory',
+        'OcraServiceManager\\ServiceManager\\ZDTCollector'
+            => 'OcraServiceManager\\ServiceFactory\\ZDTCollectorFactory',
+        'OcraServiceManager\\ServiceManager\\AccessInterceptors'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceManagerAccessInterceptorsFactory',
+        'OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory'
+            => 'OcraServiceManager\\ServiceFactory\\AccessInterceptorProxyFactoryFactory',
     ),
 );
