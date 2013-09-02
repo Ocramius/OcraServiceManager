@@ -18,6 +18,7 @@
 
 namespace OcraServiceManagerTest\ServiceManager;
 
+use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
 use OcraServiceManager\ServiceManager\Logger;
 
 class LoggerTest extends \PHPUnit_Framework_TestCase
@@ -48,9 +49,12 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $eventManager
             ->expects($this->exactly(2))
             ->method('attach')
-            ->with($this->callback(function ($eventName) {
-                return $eventName === Logger::SERVICE_MANAGER_CREATE || $eventName === Logger::SERVICE_LOCATOR_GET;
-            }))
+            ->with(
+                $this->logicalOr(
+                    ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
+                    ServiceManagerEvent::EVENT_SERVICEMANAGER_CREATE
+                )
+            )
             ->will($this->returnValue($callback));
 
         $this->listener->attach($eventManager);

@@ -47,6 +47,7 @@ class ServiceManagerFactory implements FactoryInterface
             /* @var $locatorInterceptors \Closure[] */
             $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
+            // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
             $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
 
             if ($name && $serviceLocator instanceof ServiceManager) {

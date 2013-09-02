@@ -18,6 +18,7 @@
 
 namespace OcraServiceManager\ServiceManager;
 
+use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventInterface;
@@ -54,11 +55,11 @@ class Logger implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $this->handlers[] = $events->attach(
-            static::SERVICE_LOCATOR_GET,
+            ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
             array($this, 'logServiceLocatorGet')
         );
         $this->handlers[] = $events->attach(
-            static::SERVICE_MANAGER_CREATE,
+            ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
             array($this, 'logServiceManagerCreate')
         );
     }
