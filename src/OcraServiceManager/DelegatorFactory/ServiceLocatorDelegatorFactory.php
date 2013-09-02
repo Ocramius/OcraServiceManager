@@ -50,7 +50,7 @@ class ServiceLocatorDelegatorFactory implements DelegatorFactoryInterface
      */
     public function __construct(AccessInterceptorScopeLocalizerFactory $proxyFactory, array $locatorInterceptors)
     {
-        $this->proxyFactory = $proxyFactory;
+        $this->proxyFactory        = $proxyFactory;
         $this->locatorInterceptors = $locatorInterceptors;
     }
 

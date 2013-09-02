@@ -16,31 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManagerTest\ServiceManager\TestAsset;
+namespace OcraServiceManager\ServiceFactory;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
+use OcraServiceManager\DelegatorFactory\ServiceLocatorDelegatorFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ServiceManagerAwareFoo implements ServiceManagerAwareInterface
+class ServiceLocatorDelegatorFactoryFactory implements FactoryInterface
 {
     /**
-     * @var ServiceManager
-     */
-    protected $serviceManager;
-
-    /**
-     * @return Foo
-     */
-    public function getFoo()
-    {
-        return $this->serviceManager->get('foo');
-    }
-
-    /**
      * {@inheritDoc}
+     *
+     * @return ServiceLocatorDelegatorFactory
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
+        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        /* @var $locatorInterceptors \Closure[] */
+        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
+
+        return new ServiceLocatorDelegatorFactory($proxyFactory, $locatorInterceptors);
     }
 }
