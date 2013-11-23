@@ -23,7 +23,7 @@
         "zendframework/zend-servicemanager":  "2.2.*",
         "zendframework/zend-modulemanager":   "2.2.*",
         "zendframework/zend-http":            "2.2.*",
-        "ocramius/proxy-manager":             "dev-feature/access-interceptor-scope-localizer@DEV"
+        "ocramius/proxy-manager":             "0.5.*"
     },
     "require-dev": {
         "zendframework/zendframework":        "2.2.*",
