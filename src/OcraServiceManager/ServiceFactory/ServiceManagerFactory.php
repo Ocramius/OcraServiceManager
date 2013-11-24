@@ -18,10 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use OcraServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use OcraServiceManager\ServiceManager\LoggedServiceManager;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Factory responsible of building an {@see OcraServiceManager\ServiceManager}
@@ -35,30 +34,36 @@ class ServiceManagerFactory implements FactoryInterface
      * Create an overloaded service manager
      *
      * @param  ServiceLocatorInterface $serviceLocator
-     * @return ServiceManager
+     * @param  string|null             $name
+     * @return ServiceLocatorInterface
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $serviceLocator, $name = null)
     {
         $config = $serviceLocator->get('Config');
 
-        if ($config['ocra_service_manager']['logged_service_manager']) {
-            /* @var $eventManager \Zend\EventManager\EventManagerInterface */
-            $eventManager = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
-            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new LoggedServiceManager($eventManager, $serviceLocator);
-        } else {
-            /* @var $serviceLocator \Zend\ServiceManager\ServiceManager*/
-            $serviceManager = new ServiceManager($serviceLocator);
+        if (! $config['ocra_service_manager']['logged_service_manager']) {
+            return $serviceLocator;
         }
 
-        foreach ($config['service_manager']['lazy_services'] as $lazyService => $factory) {
-            if (is_int($lazyService)) {
-                $serviceManager->setProxyService($factory);
-            } else {
-                $serviceManager->setProxyService($lazyService, $factory);
-            }
+        /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
+        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        /* @var $locatorInterceptors \Closure[] */
+        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
+
+        // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
+        $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
+
+        if (! ($name && $serviceLocator instanceof ServiceManager)) {
+            return $proxyLocator;
         }
 
-        return $serviceManager;
+        // @todo this service hardcoding should be removed
+        $allowOverrides = $serviceLocator->getAllowOverride();
+
+        $serviceLocator->setAllowOverride(true);
+        $serviceLocator->setService('ServiceManager', $proxyLocator);
+        $serviceLocator->setAllowOverride($allowOverrides);
+
+        return $proxyLocator;
     }
 }

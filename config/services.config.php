@@ -21,15 +21,60 @@ return array(
         'OcraServiceManager\\ServiceManager\\Logger'            => 'OcraServiceManager\\ServiceManager\\Logger',
     ),
     'factories'  => array(
-        'Application'                                           => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
-        'ControllerPluginManager'                               => 'OcraServiceManager\\ServiceFactory\\ControllerPluginManagerFactory',
-        'ControllerLoader'                                      => 'OcraServiceManager\\ServiceFactory\\ControllerManagerFactory',
-        'ViewHelperManager'                                     => 'OcraServiceManager\\ServiceFactory\\ViewHelperPluginManagerFactory',
-        'OcraServiceManager\\ServiceManager\\EventManager'      => 'OcraServiceManager\\ServiceFactory\\EventManagerFactory',
-        'OcraServiceManager\\View\\Helper\\YumlUrl'             => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-        'OcraServiceManager\\ServiceManager'                    => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
-        'OcraServiceManager\\Cache\\ServiceProxyCache'          => 'OcraServiceManager\\ServiceFactory\\CacheFactory',
-        'OcraServiceManager\Proxy\ServiceProxyAbstractFactory'  => 'OcraServiceManager\\ServiceFactory\\ServiceProxyAbstractFactoryFactory',
-        'OcraServiceManager\\ServiceManager\\ZDTCollector'      => 'OcraServiceManager\\ServiceFactory\\ZDTCollectorFactory',
+        'Application'
+            => 'OcraServiceManager\\ServiceFactory\\ApplicationFactory',
+        'OcraServiceManager\\ServiceManager\\EventManager'
+            => 'OcraServiceManager\\ServiceFactory\\EventManagerFactory',
+        'OcraServiceManager\\View\\Helper\\YumlUrl'
+            => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
+        'OcraServiceManager\\ServiceManager'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceManagerFactory',
+        'OcraServiceManager\\Cache\\ServiceProxyCache'
+            => 'OcraServiceManager\\ServiceFactory\\CacheFactory',
+        'OcraServiceManager\Proxy\ServiceProxyAbstractFactory'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceProxyAbstractFactoryFactory',
+        'OcraServiceManager\\ServiceManager\\ZDTCollector'
+            => 'OcraServiceManager\\ServiceFactory\\ZDTCollectorFactory',
+        'OcraServiceManager\\ServiceManager\\AccessInterceptors'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceManagerAccessInterceptorsFactory',
+        'OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory'
+            => 'OcraServiceManager\\ServiceFactory\\AccessInterceptorProxyFactoryFactory',
+        'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory'
+            => 'OcraServiceManager\\ServiceFactory\\ServiceLocatorDelegatorFactoryFactory',
+    ),
+    'delegators' => array(
+        'ControllerLoader' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'ControllerPluginManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'FilterManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'FormElementManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'HydratorManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'InputFilterManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'PaginatorPluginManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'RoutePluginManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'SerializerAdapterManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'ValidatorManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
+        'ViewHelperManager' => array(
+            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
+        ),
     ),
 );

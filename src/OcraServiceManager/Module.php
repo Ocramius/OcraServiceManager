@@ -18,9 +18,7 @@
 
 namespace OcraServiceManager;
 
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
 /**
  * OcraServiceManager module
@@ -28,7 +26,7 @@ use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
+class Module implements ConfigProviderInterface
 {
     /**
      * {@inheritDoc}
@@ -36,28 +34,5 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface, ViewH
     public function getConfig()
     {
         return require __DIR__ . '/../../config/module.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getServiceConfig()
-    {
-        return require __DIR__ . '/../../config/services.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getViewHelperConfig()
-    {
-        return array(
-            'invokables' => array(
-                'x11LikeColor' => 'OcraServiceManager\\View\\Helper\\X11LikeColor',
-            ),
-            'factories'  => array(
-                'yumlUrl'      => 'OcraServiceManager\\ServiceFactory\\YumlUrlFactory',
-            ),
-        );
     }
 }

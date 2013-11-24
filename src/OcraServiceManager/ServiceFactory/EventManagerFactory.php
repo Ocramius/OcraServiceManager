@@ -18,9 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Zend\EventManager\EventManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\EventManager\EventManager;
 
 /**
  * Factory responsible of building an {@see \Zend\EventManager\EventManagerInterface}

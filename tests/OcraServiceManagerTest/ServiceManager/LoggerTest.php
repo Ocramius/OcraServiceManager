@@ -18,6 +18,7 @@
 
 namespace OcraServiceManagerTest\ServiceManager;
 
+use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
 use OcraServiceManager\ServiceManager\Logger;
 
 class LoggerTest extends \PHPUnit_Framework_TestCase
@@ -29,6 +30,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @covers \OcraServiceManager\ServiceManager\Logger
      */
     public function setUp()
     {
@@ -48,9 +51,12 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $eventManager
             ->expects($this->exactly(2))
             ->method('attach')
-            ->with($this->callback(function ($eventName) {
-                return $eventName === Logger::SERVICE_MANAGER_CREATE || $eventName === Logger::SERVICE_LOCATOR_GET;
-            }))
+            ->with(
+                $this->logicalOr(
+                    ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
+                    ServiceManagerEvent::EVENT_SERVICEMANAGER_CREATE
+                )
+            )
             ->will($this->returnValue($callback));
 
         $this->listener->attach($eventManager);
@@ -75,20 +81,17 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function testLogServiceLocatorGet()
     {
         $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
-        $event          = $this->getMock('Zend\\EventManager\\EventInterface');
         $instance       = new \stdClass();
+        $event          = $this
+            ->getMockBuilder('OcraServiceManager\\ServiceManager\\Event\\ServiceManagerEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $event->expects($this->any())->method('getTarget')->will($this->returnValue($serviceLocator));
-        $event->expects($this->any())->method('getParam')->will($this->returnCallback(function ($name) use ($instance) {
-            $data = array(
-                'instance'       => $instance,
-                'canonical_name' => 'canonical-name',
-                'requested_name' => 'requested\\name',
-                'trace'          => null,
-            );
-
-            return $data[$name];
-        }));
+        $event->expects($this->any())->method('getServiceLocator')->will($this->returnValue($serviceLocator));
+        $event->expects($this->any())->method('getInstance')->will($this->returnValue($instance));
+        $event->expects($this->any())->method('getCanonicalName')->will($this->returnValue('canonical-name'));
+        $event->expects($this->any())->method('getRequestedName')->will($this->returnValue('requested\\name'));
+        $event->expects($this->any())->method('getTrace')->will($this->returnValue(array()));
 
         $result = $this->listener->logServiceLocatorGet($event);
 
@@ -107,20 +110,17 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function testLogServiceManagerCreate()
     {
         $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
-        $event          = $this->getMock('Zend\\EventManager\\EventInterface');
         $instance       = new \stdClass();
+        $event          = $this
+            ->getMockBuilder('OcraServiceManager\\ServiceManager\\Event\\ServiceManagerEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $event->expects($this->any())->method('getTarget')->will($this->returnValue($serviceLocator));
-        $event->expects($this->any())->method('getParam')->will($this->returnCallback(function ($name) use ($instance) {
-            $data = array(
-                'instance'       => $instance,
-                'canonical_name' => 'canonical-name',
-                'requested_name' => 'requested\\name',
-                'trace'          => null,
-            );
-
-            return $data[$name];
-        }));
+        $event->expects($this->any())->method('getServiceLocator')->will($this->returnValue($serviceLocator));
+        $event->expects($this->any())->method('getInstance')->will($this->returnValue($instance));
+        $event->expects($this->any())->method('getCanonicalName')->will($this->returnValue('canonical-name'));
+        $event->expects($this->any())->method('getRequestedName')->will($this->returnValue('requested\\name'));
+        $event->expects($this->any())->method('getTrace')->will($this->returnValue(array()));
 
         $result = $this->listener->logServiceManagerCreate($event);
 
@@ -143,7 +143,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                 null,
                 'canonical-name',
                 'requested\\name',
-                'methodName'
+                'methodName',
+                array()
             )
         );
     }

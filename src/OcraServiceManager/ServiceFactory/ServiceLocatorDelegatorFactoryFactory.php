@@ -16,24 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManagerTest\ServiceManager\TestAsset;
+namespace OcraServiceManager\ServiceFactory;
 
-use Zend\ServiceManager\AbstractFactoryInterface;
+use OcraServiceManager\DelegatorFactory\ServiceLocatorDelegatorFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class BarAbstractFactory implements AbstractFactoryInterface
+class ServiceLocatorDelegatorFactoryFactory implements FactoryInterface
 {
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    /**
+     * {@inheritDoc}
+     *
+     * @return ServiceLocatorDelegatorFactory
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        if ($name != 'bar') {
-            return false;
-        }
+        /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
+        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        /* @var $locatorInterceptors \Closure[] */
+        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
-        return true;
-    }
-
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        return new Bar(array());
+        return new ServiceLocatorDelegatorFactory($proxyFactory, $locatorInterceptors);
     }
 }

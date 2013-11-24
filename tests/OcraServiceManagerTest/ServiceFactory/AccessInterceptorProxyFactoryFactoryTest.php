@@ -16,44 +16,34 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManagerTestAsset\ServiceManager;
+namespace OcraServiceManagerTest\ServiceFactory;
 
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use OcraServiceManager\ServiceFactory\AccessInterceptorProxyFactoryFactory;
+use PHPUnit_Framework_TestCase;
 
 /**
- * Abstract factory that keeps track of the number of times it is instantiated
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
  */
-class FooCounterAbstractFactory implements AbstractFactoryInterface
+class AccessInterceptorProxyFactoryFactoryTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var int
+     * @covers \OcraServiceManager\ServiceFactory\AccessInterceptorProxyFactoryFactory::createService
      */
-    public static $instantiationCount = 0;
-
-    /**
-     * Increments instantiation count
-     */
-    public function __construct()
+    public function testCreateService()
     {
-        self::$instantiationCount += 1;
-    }
+        $factory        = new AccessInterceptorProxyFactoryFactory();
+        $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
 
-    /**
-     * {@inheritDoc}
-     */
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        if ($name == 'foo') {
-            return true;
-        }
-    }
+        $serviceLocator
+            ->expects($this->any())
+            ->method('get')
+            ->with('Config')
+            ->will($this->returnValue(array()));
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        return new Foo;
+        $this->assertInstanceOf(
+            'ProxyManager\\Factory\\AccessInterceptorScopeLocalizerFactory',
+            $factory->createService($serviceLocator)
+        );
     }
 }

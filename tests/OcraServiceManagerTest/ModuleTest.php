@@ -16,31 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManagerTest\ServiceManager\TestAsset;
+namespace OcraServiceManagerTest;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
+use OcraServiceManager\Module;
+use PHPUnit_Framework_TestCase;
 
-class ServiceManagerAwareFoo implements ServiceManagerAwareInterface
+/**
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
+ */
+class ModuleTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var ServiceManager
+     * @covers \OcraServiceManager\Module::getConfig
      */
-    protected $serviceManager;
-
-    /**
-     * @return Foo
-     */
-    public function getFoo()
+    public function testGetConfig()
     {
-        return $this->serviceManager->get('foo');
-    }
+        $module = new Module();
+        $config = $module->getConfig();
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setServiceManager(ServiceManager $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
+        $this->assertInternalType('array', $config);
+        $this->assertTrue(isset($config['ocra_service_manager']['logged_service_manager']));
+        $this->assertSame($config, unserialize(serialize($config)), 'Config is serializable');
     }
 }

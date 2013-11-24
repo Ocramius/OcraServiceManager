@@ -18,9 +18,10 @@
 
 namespace OcraServiceManager\ServiceManager;
 
+use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
+use ProxyManager\Proxy\ProxyInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\EventInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
@@ -33,9 +34,6 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
  */
 class Logger implements ListenerAggregateInterface
 {
-    const SERVICE_LOCATOR_GET    = 'get';
-    const SERVICE_MANAGER_CREATE = 'create';
-
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
      */
@@ -54,11 +52,11 @@ class Logger implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $this->handlers[] = $events->attach(
-            static::SERVICE_LOCATOR_GET,
+            ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
             array($this, 'logServiceLocatorGet')
         );
         $this->handlers[] = $events->attach(
-            static::SERVICE_MANAGER_CREATE,
+            ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
             array($this, 'logServiceManagerCreate')
         );
     }
@@ -76,46 +74,58 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param EventInterface $event
+     * @param ServiceManagerEvent $event
      *
      * @return array|bool
      */
-    public function logServiceLocatorGet(EventInterface $event)
+    public function logServiceLocatorGet(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
-            $event->getTarget(),
-            $event->getParam('instance'),
-            $event->getParam('canonical_name'),
-            $event->getParam('requested_name'),
+            $event->getServiceLocator(),
+            $event->getInstance(),
+            $event->getCanonicalName(),
+            $event->getRequestedName(),
             'get',
-            $event->getParam('trace')
+            $event->getTrace()
         );
     }
 
     /**
-     * @param EventInterface $event
+     * @param ServiceManagerEvent $event
      *
      * @return array|bool
      */
-    public function logServiceManagerCreate(EventInterface $event)
+    public function logServiceManagerCreate(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
-            $event->getTarget(),
-            $event->getParam('instance'),
-            $event->getParam('canonical_name'),
-            $event->getParam('requested_name'),
+            $event->getServiceLocator(),
+            $event->getInstance(),
+            $event->getCanonicalName(),
+            $event->getRequestedName(),
             'create',
-            $event->getParam('trace')
+            $event->getTrace()
         );
     }
 
+    /**
+     * @private this method is public only for test purposes. Don't use it directly!
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param mixed $instance
+     * @param string $canonicalName
+     * @param string $requestedName
+     * @param string $methodName
+     * @param array $trace
+     *
+     * @return array|bool
+     */
     public function registerServiceCall(
         ServiceLocatorInterface $serviceLocator,
         $instance,
         $canonicalName,
         $requestedName,
         $methodName,
-        array $trace = null
+        array $trace
     ) {
         if (!is_object($instance)) {
             return false;
@@ -127,7 +137,7 @@ class Logger implements ListenerAggregateInterface
             'requested_name'  => $requestedName,
             'canonical_name'  => $canonicalName,
             'method'          => $methodName,
-            'trace'           => $trace ?: debug_backtrace(true),
+            'trace'           => $trace,
         );
     }
 
@@ -266,10 +276,9 @@ class Logger implements ListenerAggregateInterface
             }
 
             // service locator aware - maybe the dependency was pulled later on
-            if (
-                $methodCall['object'] instanceof ServiceLocatorAwareInterface
+            if ($methodCall['object'] instanceof ServiceLocatorAwareInterface
                 || $methodCall['object'] instanceof ServiceManagerAwareInterface
-) {
+            ) {
                 foreach ($this->tracedCalls as $tracedCall) {
                     if ($tracedCall['instance'] === $methodCall['object']) {
                         return $tracedCall;
@@ -277,8 +286,7 @@ class Logger implements ListenerAggregateInterface
                 }
             }
 
-            if (
-                !($methodCall['object'] instanceof ServiceLocatorInterface)
+            if (!($methodCall['object'] instanceof ServiceLocatorInterface)
                 || !in_array(strtolower($methodCall['function']), array('get', 'create'))
             ) {
                 continue;
@@ -299,10 +307,9 @@ class Logger implements ListenerAggregateInterface
             }
 
             foreach ($this->tracedCalls as $tracedCall) {
-                if (
-                    $tracedCall['service_locator'] === $methodCall['object']
+                if ($tracedCall['service_locator'] === $methodCall['object']
                     && $tracedCall['requested_name'] === $rName
-) {
+                ) {
                     return $tracedCall;
                 }
             }
@@ -389,7 +396,8 @@ class Logger implements ListenerAggregateInterface
 
         foreach ($this->tracedCalls as $tracedCall) {
             $serviceLocator = $tracedCall['service_locator'];
-            $serviceLocators[spl_object_hash($serviceLocator)] = get_class($serviceLocator);
+            $serviceLocators[spl_object_hash($serviceLocator)] = $serviceLocator instanceof ProxyInterface
+                ? get_parent_class($serviceLocator) : get_class($serviceLocator);
         }
 
         return $serviceLocators;

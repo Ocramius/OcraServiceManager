@@ -16,32 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-namespace OcraServiceManagerTestAsset\ServiceManager;
+namespace OcraServiceManager\ServiceFactory;
 
-use stdClass;
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\MutableCreationOptionsInterface;
+use ProxyManager\Configuration;
+use ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory;
+use ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy;
+use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * implements multiple interface mock
+ * Factory responsible of building
+ * an {@see \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory}
+ *
+ * Note: the double "factory" in the class name is actually because we're
+ * producing another factory here.
+ *
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
  */
-class AbstractFactoryWithMutableCreationOptions implements
-    AbstractFactoryInterface,
-    MutableCreationOptionsInterface
+class AccessInterceptorProxyFactoryFactory implements FactoryInterface
 {
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    /**
+     * {@inheritDoc}
+     *
+     * @return AccessInterceptorScopeLocalizerFactory
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return true;
-    }
+        $config = new Configuration();
 
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        return new stdClass;
-    }
+        $config->setGeneratorStrategy(new EvaluatingGeneratorStrategy());
 
-    public function setCreationOptions(array $options)
-    {
-        $this->options = $options;
+        return new AccessInterceptorScopeLocalizerFactory($config);
     }
 }

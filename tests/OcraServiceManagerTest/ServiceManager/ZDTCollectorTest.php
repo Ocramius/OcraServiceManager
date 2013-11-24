@@ -72,6 +72,7 @@ class ZDTCollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array('a' => array()), $collector->getServices());
         $this->assertSame(array('b' => array()), $collector->getServiceLocators());
     }
+
     /**
      * @covers \OcraServiceManager\ServiceManager\ZDTCollector::__construct
      * @covers \OcraServiceManager\ServiceManager\ZDTCollector::collect

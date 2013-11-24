@@ -39,6 +39,8 @@ class YumlControlleTest extends \PHPUnit_Framework_TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @covers \OcraServiceManager\Controller\YumlController
      */
     public function setUp()
     {
