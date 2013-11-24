@@ -59,6 +59,7 @@ class ServiceManagerFactory implements FactoryInterface
 
         // @todo this service hardcoding should be removed
         $allowOverrides = $serviceLocator->getAllowOverride();
+
         $serviceLocator->setAllowOverride(true);
         $serviceLocator->setService('ServiceManager', $proxyLocator);
         $serviceLocator->setAllowOverride($allowOverrides);

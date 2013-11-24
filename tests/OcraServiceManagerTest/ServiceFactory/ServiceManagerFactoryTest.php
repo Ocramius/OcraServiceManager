@@ -81,4 +81,79 @@ class ServiceManagerFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($proxyLocator, $factory->createService($serviceLocator));
     }
+
+    /**
+     * @covers \OcraServiceManager\ServiceFactory\ServiceManagerFactory::createService
+     */
+    public function testOverridesServiceManagerService()
+    {
+        $factory        = new ServiceManagerFactory();
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceManager');
+        $proxyLocator   = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+        $proxyFactory   = $this
+            ->getMockBuilder('ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $proxyFactory
+            ->expects($this->any())
+            ->method('createProxy')
+            ->with($serviceLocator, array(), array('foo', 'bar'))
+            ->will($this->returnValue($proxyLocator));
+
+        $serviceLocator->expects($this->once())->method('setService')->with('ServiceManager', $proxyLocator);
+
+        $serviceLocator
+            ->expects($this->any())
+            ->method('get')
+            ->will(
+                $this->returnCallback(
+                    function ($service) use ($proxyFactory) {
+                        if ('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory' === $service) {
+                            return $proxyFactory;
+                        }
+
+                        if ('OcraServiceManager\\ServiceManager\\AccessInterceptors' === $service) {
+                            return array('foo', 'bar');
+                        }
+
+                        if ('Config' === $service) {
+                            return array(
+                                'ocra_service_manager' => array(
+                                    'logged_service_manager' => true,
+                                ),
+                                'service_manager' => array(
+                                    'lazy_services' => array(),
+                                ),
+                            );
+                        }
+
+                        throw new UnexpectedValueException(sprintf('Unknown service "%s"', $service));
+                    }
+                )
+            );
+
+        $this->assertSame($proxyLocator, $factory->createService($serviceLocator, 'OcraServiceManager\ServiceManager'));
+    }
+
+    /**
+     * @covers \OcraServiceManager\ServiceFactory\ServiceManagerFactory::createService
+     */
+    public function testSkipsIfLoggedServiceManagerIsDisabled()
+    {
+        $factory        = new ServiceManagerFactory();
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
+        $serviceLocator
+            ->expects($this->any())
+            ->method('get')
+            ->with('Config')
+            ->will($this->returnValue(array(
+                'ocra_service_manager' => array(
+                    'logged_service_manager' => false,
+                ),
+            )));
+
+        $this->assertSame($serviceLocator, $factory->createService($serviceLocator));
+    }
 }
