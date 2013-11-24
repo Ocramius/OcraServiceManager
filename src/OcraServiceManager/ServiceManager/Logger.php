@@ -34,9 +34,6 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
  */
 class Logger implements ListenerAggregateInterface
 {
-    const SERVICE_LOCATOR_GET    = 'get';
-    const SERVICE_MANAGER_CREATE = 'create';
-
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
      */
