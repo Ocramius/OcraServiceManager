@@ -36,6 +36,8 @@ class YumlUrlTest extends PHPUnit_Framework_TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @covers \OcraServiceManager\View\Helper\YumlUrl
      */
     public function setUp()
     {
@@ -43,6 +45,9 @@ class YumlUrlTest extends PHPUnit_Framework_TestCase
         $this->helper = new YumlUrl();
     }
 
+    /**
+     * @covers \OcraServiceManager\View\Helper\YumlUrl
+     */
     public function testGetUrl()
     {
         $this->assertSame(

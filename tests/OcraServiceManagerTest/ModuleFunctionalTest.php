@@ -27,6 +27,8 @@ use Zend\Mvc\Service\ServiceManagerConfig;
  *
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
+ *
+ * @coversNothing
  */
 class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
 {

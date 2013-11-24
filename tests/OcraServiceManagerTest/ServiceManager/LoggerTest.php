@@ -30,6 +30,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @covers \OcraServiceManager\ServiceManager\Logger
      */
     public function setUp()
     {
