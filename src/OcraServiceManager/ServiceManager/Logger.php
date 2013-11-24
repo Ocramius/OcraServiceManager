@@ -275,8 +275,7 @@ class Logger implements ListenerAggregateInterface
             }
 
             // service locator aware - maybe the dependency was pulled later on
-            if (
-                $methodCall['object'] instanceof ServiceLocatorAwareInterface
+            if ($methodCall['object'] instanceof ServiceLocatorAwareInterface
                 || $methodCall['object'] instanceof ServiceManagerAwareInterface
             ) {
                 foreach ($this->tracedCalls as $tracedCall) {
@@ -286,8 +285,7 @@ class Logger implements ListenerAggregateInterface
                 }
             }
 
-            if (
-                !($methodCall['object'] instanceof ServiceLocatorInterface)
+            if (!($methodCall['object'] instanceof ServiceLocatorInterface)
                 || !in_array(strtolower($methodCall['function']), array('get', 'create'))
             ) {
                 continue;
@@ -308,8 +306,7 @@ class Logger implements ListenerAggregateInterface
             }
 
             foreach ($this->tracedCalls as $tracedCall) {
-                if (
-                    $tracedCall['service_locator'] === $methodCall['object']
+                if ($tracedCall['service_locator'] === $methodCall['object']
                     && $tracedCall['requested_name'] === $rName
                 ) {
                     return $tracedCall;

@@ -46,8 +46,7 @@ class YumlController extends AbstractActionController
     {
         $config = $this->getServiceLocator()->get('Config');
 
-        if (
-            !isset($config['ocra_service_manager']['logged_service_manager'])
+        if (!isset($config['ocra_service_manager']['logged_service_manager'])
             || !$config['ocra_service_manager']['logged_service_manager']
             || !isset($config['zenddevelopertools']['toolbar']['enabled'])
             || !$config['zenddevelopertools']['toolbar']['enabled']
