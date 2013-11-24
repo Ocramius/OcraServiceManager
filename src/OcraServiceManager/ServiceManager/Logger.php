@@ -74,11 +74,11 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param EventInterface $event
+     * @param ServiceManagerEvent $event
      *
      * @return array|bool
      */
-    public function logServiceLocatorGet(EventInterface $event)
+    public function logServiceLocatorGet(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
             $event->getTarget(),

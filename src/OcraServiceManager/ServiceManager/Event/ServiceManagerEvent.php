@@ -56,9 +56,14 @@ class ServiceManagerEvent extends Event
     private $trace;
 
     /**
+     * @var mixed
+     */
+    private $instance;
+
+    /**
      * @param string                  $eventName
      * @param ServiceLocatorInterface $serviceLocator
-     * @param object                  $instance
+     * @param mixed                   $instance
      * @param string                  $requestedName
      * @param                         $canonicalName
      */
@@ -70,6 +75,7 @@ class ServiceManagerEvent extends Event
         $canonicalName
     ) {
         $this->serviceLocator = $serviceLocator;
+        $this->instance       = $instance;
         $this->requestedName  = (string) $requestedName;
         $this->canonicalName  = (string) $canonicalName;
         $this->trace          = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
@@ -87,6 +93,22 @@ class ServiceManagerEvent extends Event
     }
 
     /**
+     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInstance()
+    {
+        return $this->instance;
+    }
+
+    /**
      * @return string
      */
     public function getCanonicalName()
@@ -100,14 +122,6 @@ class ServiceManagerEvent extends Event
     public function getRequestedName()
     {
         return $this->requestedName;
-    }
-
-    /**
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 
     /**

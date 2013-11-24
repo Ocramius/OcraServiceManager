@@ -46,6 +46,7 @@ class ServiceManagerEventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('serviceName', $event->getParam('requested_name'));
         $this->assertSame('servicename', $event->getCanonicalName());
         $this->assertSame('servicename', $event->getParam('canonical_name'));
+        $this->assertSame($instance, $event->getInstance());
         $this->assertSame($instance, $event->getParam('instance'));
 
         $trace = $event->getTrace();

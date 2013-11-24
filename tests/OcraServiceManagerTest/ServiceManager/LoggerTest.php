@@ -81,8 +81,11 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function testLogServiceLocatorGet()
     {
         $serviceLocator = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
-        $event          = $this->getMock('Zend\\EventManager\\EventInterface');
         $instance       = new \stdClass();
+        $event          = $this
+            ->getMockBuilder('OcraServiceManager\\ServiceManager\\Event\\ServiceManagerEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $event->expects($this->any())->method('getTarget')->will($this->returnValue($serviceLocator));
         $event->expects($this->any())->method('getParam')->will($this->returnCallback(function ($name) use ($instance) {
