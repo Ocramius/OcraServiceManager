@@ -78,7 +78,7 @@ class ServiceManagerEvent extends Event
         $this->instance       = $instance;
         $this->requestedName  = (string) $requestedName;
         $this->canonicalName  = (string) $canonicalName;
-        $this->trace          = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        $this->trace          = debug_backtrace(true);
 
         parent::__construct(
             $eventName,
