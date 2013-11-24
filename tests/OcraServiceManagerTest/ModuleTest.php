@@ -20,8 +20,6 @@ namespace OcraServiceManagerTest;
 
 use OcraServiceManager\Module;
 use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager as BaseServiceManager;
-use Zend\Mvc\Service\ServiceManagerConfig;
 
 /**
  * @author  Marco Pivetta <ocramius@gmail.com>
