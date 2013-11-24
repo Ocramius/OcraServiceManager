@@ -41,7 +41,7 @@ class ModuleTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \OcraServiceManager\Module::getConfig
+     * @covers \OcraServiceManager\Module::getServiceConfig
      */
     public function testGetServiceConfig()
     {
