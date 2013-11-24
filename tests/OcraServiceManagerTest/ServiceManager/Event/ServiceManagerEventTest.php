@@ -51,5 +51,8 @@ class ServiceManagerEventTest extends \PHPUnit_Framework_TestCase
         $trace = $event->getTrace();
 
         $this->assertInternalType('array', $trace);
+        $this->assertSame($trace, $event->getParam('trace'));
+
+        $this->assertSame($this, $trace[1]['object']);
     }
 }
