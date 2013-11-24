@@ -21,7 +21,6 @@ namespace OcraServiceManager\ServiceManager;
 use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\EventInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceManagerAwareInterface;

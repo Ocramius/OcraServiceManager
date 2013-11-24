@@ -18,9 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use OcraServiceManager\ServiceManager\ZDTCollector;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use OcraServiceManager\ServiceManager\ZDTCollector;
 
 /**
  * Factory responsible of building a {@see \OcraServiceManager\ServiceManager\ZDTCollector}

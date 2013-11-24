@@ -18,10 +18,10 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use OcraServiceManager\View\Helper\YumlUrl;
 use Zend\Escaper\Escaper;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of building a {@see \OcraServiceManager\View\Helper\YumlUrl}
