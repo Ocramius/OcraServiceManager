@@ -19,6 +19,7 @@
 namespace OcraServiceManager\ServiceManager;
 
 use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
+use ProxyManager\Proxy\ProxyInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -395,7 +396,8 @@ class Logger implements ListenerAggregateInterface
 
         foreach ($this->tracedCalls as $tracedCall) {
             $serviceLocator = $tracedCall['service_locator'];
-            $serviceLocators[spl_object_hash($serviceLocator)] = get_class($serviceLocator);
+            $serviceLocators[spl_object_hash($serviceLocator)] = $serviceLocator instanceof ProxyInterface
+                ? get_parent_class($serviceLocator) : get_class($serviceLocator);
         }
 
         return $serviceLocators;
