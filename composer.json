@@ -19,10 +19,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "zendframework/zend-mvc":             "2.2.*",
-        "zendframework/zend-servicemanager":  "2.2.*",
-        "zendframework/zend-modulemanager":   "2.2.*",
-        "zendframework/zend-http":            "2.2.*",
+        "zendframework/zend-mvc":             "~2.2",
+        "zendframework/zend-servicemanager":  "~2.2",
+        "zendframework/zend-modulemanager":   "~2.2",
+        "zendframework/zend-http":            "~2.2",
         "ocramius/proxy-manager":             "0.5.*"
     },
     "require-dev": {
@@ -38,6 +38,11 @@
     "autoload": {
         "psr-0": {
             "OcraServiceManager\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
         }
     }
 }
