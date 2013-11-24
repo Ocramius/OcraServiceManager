@@ -41,26 +41,28 @@ class ServiceManagerFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
 
-        if ($config['ocra_service_manager']['logged_service_manager']) {
-            /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
-            $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
-            /* @var $locatorInterceptors \Closure[] */
-            $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
+        if (! $config['ocra_service_manager']['logged_service_manager']) {
+            return $serviceLocator;
+        }
 
-            // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
-            $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
+        /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
+        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        /* @var $locatorInterceptors \Closure[] */
+        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
-            if ($name && $serviceLocator instanceof ServiceManager) {
-                // @todo this service hardcoding should be removed
-                $allowOverrides = $serviceLocator->getAllowOverride();
-                $serviceLocator->setAllowOverride(true);
-                $serviceLocator->setService('ServiceManager', $proxyLocator);
-                $serviceLocator->setAllowOverride($allowOverrides);
-            }
+        // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
+        $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
 
+        if (! ($name && $serviceLocator instanceof ServiceManager)) {
             return $proxyLocator;
         }
 
-        return $serviceLocator;
+        // @todo this service hardcoding should be removed
+        $allowOverrides = $serviceLocator->getAllowOverride();
+        $serviceLocator->setAllowOverride(true);
+        $serviceLocator->setService('ServiceManager', $proxyLocator);
+        $serviceLocator->setAllowOverride($allowOverrides);
+
+        return $proxyLocator;
     }
 }
