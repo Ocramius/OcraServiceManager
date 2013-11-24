@@ -49,14 +49,10 @@ return array(
         'ControllerPluginManager' => array(
             'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
         ),
-        'ConsoleViewManager' => array(),
         'FilterManager' => array(
             'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
         ),
         'FormElementManager' => array(
-            'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
-        ),
-        'HttpViewManager' => array(
             'OcraServiceManager\\DelegatorFactory\\ServiceLocatorDelegatorFactory',
         ),
         'HydratorManager' => array(

@@ -19,7 +19,6 @@
 namespace OcraServiceManagerTest\Functional;
 
 use PHPUnit_Framework_TestCase;
-use ProxyManager\Proxy\AccessInterceptorInterface;
 use Zend\Mvc\Application;
 
 /**
@@ -45,7 +44,7 @@ class ApplicationRunTest extends PHPUnit_Framework_TestCase
         $sm = $application->getServiceManager();
 
         $this->assertSame($sm, $sm->get('OcraServiceManager\\ServiceManager'));
-        $this->assertFalse($sm instanceof AccessInterceptorInterface);
+        $this->assertNotInstanceOf('ProxyManager\\Proxy\\AccessInterceptorInterface', $sm);
     }
 
     public function testApplicationUsesLoggedServiceManager()
@@ -65,6 +64,41 @@ class ApplicationRunTest extends PHPUnit_Framework_TestCase
         $sm = $application->getServiceManager();
 
         $this->assertSame($sm, $sm->get('OcraServiceManager\\ServiceManager'));
-        $this->assertTrue($sm instanceof AccessInterceptorInterface);
+        $this->assertInstanceOf('ProxyManager\\Proxy\\AccessInterceptorInterface', $sm);
+    }
+
+    public function testApplicationUsesLoggedPluginManagers()
+    {
+        $sm = Application::init(array(
+                'modules' => array(
+                    'OcraServiceManager',
+                ),
+                'module_listener_options' => array(
+                    'module_paths' => array(),
+                    'config_glob_paths' => array(
+                        __DIR__ . '/../../testing.config.php'
+                    ),
+                ),
+            ))
+            ->getServiceManager();
+
+        $pluginManagers = array(
+            'ServiceManager',
+            'ControllerLoader',
+            'ControllerPluginManager',
+            'FilterManager',
+            'FormElementManager',
+            'HydratorManager',
+            'InputFilterManager',
+            'PaginatorPluginManager',
+            'RoutePluginManager',
+            'SerializerAdapterManager',
+            'ValidatorManager',
+            'ViewHelperManager',
+        );
+
+        foreach ($pluginManagers as $pluginManager) {
+            $this->assertInstanceOf('ProxyManager\\Proxy\\AccessInterceptorInterface', $sm->get($pluginManager));
+        }
     }
 }
