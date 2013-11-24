@@ -94,11 +94,11 @@ class Logger implements ListenerAggregateInterface
     }
 
     /**
-     * @param EventInterface $event
+     * @param ServiceManagerEvent $event
      *
      * @return array|bool
      */
-    public function logServiceManagerCreate(EventInterface $event)
+    public function logServiceManagerCreate(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
             $event->getTarget(),
@@ -303,7 +303,7 @@ class Logger implements ListenerAggregateInterface
                 if (
                     $tracedCall['service_locator'] === $methodCall['object']
                     && $tracedCall['requested_name'] === $rName
-) {
+                ) {
                     return $tracedCall;
                 }
             }
