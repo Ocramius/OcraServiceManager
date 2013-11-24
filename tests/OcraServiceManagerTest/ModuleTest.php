@@ -39,15 +39,4 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(isset($config['ocra_service_manager']['logged_service_manager']));
         $this->assertSame($config, unserialize(serialize($config)), 'Config is serializable');
     }
-
-    /**
-     * @covers \OcraServiceManager\Module::getServiceConfig
-     */
-    public function testGetServiceConfig()
-    {
-        $module = new Module();
-        $config = $module->getServiceConfig();
-
-        $this->assertInternalType('array', $config);
-    }
 }

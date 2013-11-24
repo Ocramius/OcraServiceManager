@@ -19,7 +19,6 @@
 namespace OcraServiceManager;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
 /**
  * OcraServiceManager module
@@ -27,7 +26,7 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class Module implements ServiceProviderInterface, ConfigProviderInterface
+class Module implements ConfigProviderInterface
 {
     /**
      * {@inheritDoc}
@@ -35,13 +34,5 @@ class Module implements ServiceProviderInterface, ConfigProviderInterface
     public function getConfig()
     {
         return require __DIR__ . '/../../config/module.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getServiceConfig()
-    {
-        return require __DIR__ . '/../../config/services.config.php';
     }
 }

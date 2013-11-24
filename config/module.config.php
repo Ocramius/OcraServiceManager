@@ -21,6 +21,8 @@ return array(
         'logged_service_manager'    => false,
     ),
 
+    'service_manager' => require __DIR__ . '/services.config.php',
+
     // zenddevelopertools specific settings
     'view_manager' => array(
         'template_map' => array(
