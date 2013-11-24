@@ -81,12 +81,12 @@ class Logger implements ListenerAggregateInterface
     public function logServiceLocatorGet(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
-            $event->getTarget(),
-            $event->getParam('instance'),
-            $event->getParam('canonical_name'),
-            $event->getParam('requested_name'),
+            $event->getServiceLocator(),
+            $event->getInstance(),
+            $event->getCanonicalName(),
+            $event->getRequestedName(),
             'get',
-            $event->getParam('trace')
+            $event->getTrace()
         );
     }
 
@@ -98,22 +98,34 @@ class Logger implements ListenerAggregateInterface
     public function logServiceManagerCreate(ServiceManagerEvent $event)
     {
         return $this->registerServiceCall(
-            $event->getTarget(),
-            $event->getParam('instance'),
-            $event->getParam('canonical_name'),
-            $event->getParam('requested_name'),
+            $event->getServiceLocator(),
+            $event->getInstance(),
+            $event->getCanonicalName(),
+            $event->getRequestedName(),
             'create',
-            $event->getParam('trace')
+            $event->getTrace()
         );
     }
 
+    /**
+     * @private this method is public only for test purposes. Don't use it directly!
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param mixed $instance
+     * @param string $canonicalName
+     * @param string $requestedName
+     * @param string $methodName
+     * @param array $trace
+     *
+     * @return array|bool
+     */
     public function registerServiceCall(
         ServiceLocatorInterface $serviceLocator,
         $instance,
         $canonicalName,
         $requestedName,
         $methodName,
-        array $trace = null
+        array $trace
     ) {
         if (!is_object($instance)) {
             return false;
@@ -125,7 +137,7 @@ class Logger implements ListenerAggregateInterface
             'requested_name'  => $requestedName,
             'canonical_name'  => $canonicalName,
             'method'          => $methodName,
-            'trace'           => $trace ?: debug_backtrace(true),
+            'trace'           => $trace,
         );
     }
 
@@ -267,7 +279,7 @@ class Logger implements ListenerAggregateInterface
             if (
                 $methodCall['object'] instanceof ServiceLocatorAwareInterface
                 || $methodCall['object'] instanceof ServiceManagerAwareInterface
-) {
+            ) {
                 foreach ($this->tracedCalls as $tracedCall) {
                     if ($tracedCall['instance'] === $methodCall['object']) {
                         return $tracedCall;
