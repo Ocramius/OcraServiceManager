@@ -3,12 +3,6 @@
     "description": "ZF2 Service manager extensions to allow service proxies and dependency graph generation",
     "type": "library",
     "license": "MIT",
-    "tags": [
-        "zend framework",
-        "lazy loading",
-        "module",
-        "servicemanager"
-    ],
     "homepage": "https://github.com/Ocramius/OcraServiceManager",
     "authors": [
         {
