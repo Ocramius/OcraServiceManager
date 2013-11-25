@@ -20,7 +20,6 @@ namespace OcraServiceManager\ServiceManager;
 
 use ZendDeveloperTools\Collector\CollectorInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Serializable;
 
 /**
