@@ -111,11 +111,11 @@ class Logger implements ListenerAggregateInterface
      * @private this method is public only for test purposes. Don't use it directly!
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @param mixed $instance
-     * @param string $canonicalName
-     * @param string $requestedName
-     * @param string $methodName
-     * @param array $trace
+     * @param mixed                   $instance
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     * @param string                  $methodName
+     * @param array                   $trace
      *
      * @return array|bool
      */
