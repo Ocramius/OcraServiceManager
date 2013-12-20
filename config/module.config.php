@@ -18,7 +18,7 @@
 
 return array(
     'ocra_service_manager' => array(
-        'logged_service_manager'    => false,
+        'logged_service_manager' => true,
     ),
 
     'service_manager' => require __DIR__ . '/services.config.php',
