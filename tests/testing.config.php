@@ -18,6 +18,6 @@
 
 return array(
     'ocra_service_manager' => array(
-        'logged_service_manager' => true,
+        'logged_service_manager' => false,
     ),
 );

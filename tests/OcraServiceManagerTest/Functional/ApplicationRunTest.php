@@ -37,7 +37,9 @@ class ApplicationRunTest extends PHPUnit_Framework_TestCase
             ),
             'module_listener_options' => array(
                 'module_paths' => array(),
-                'config_glob_paths' => array(),
+                'config_glob_paths' => array(
+                    __DIR__ . '/../../testing.config.php'
+                ),
             ),
         ));
 
@@ -55,9 +57,7 @@ class ApplicationRunTest extends PHPUnit_Framework_TestCase
             ),
             'module_listener_options' => array(
                 'module_paths' => array(),
-                'config_glob_paths' => array(
-                    __DIR__ . '/../../testing.config.php'
-                ),
+                'config_glob_paths' => array(),
             ),
         ));
 
@@ -75,9 +75,7 @@ class ApplicationRunTest extends PHPUnit_Framework_TestCase
                 ),
                 'module_listener_options' => array(
                     'module_paths' => array(),
-                    'config_glob_paths' => array(
-                        __DIR__ . '/../../testing.config.php'
-                    ),
+                    'config_glob_paths' => array(),
                 ),
             ))
             ->getServiceManager();

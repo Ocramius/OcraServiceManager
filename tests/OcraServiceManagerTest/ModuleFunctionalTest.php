@@ -43,9 +43,7 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
             array(
                 'modules'                 => array('OcraServiceManager'),
                 'module_listener_options' => array(
-                    'config_glob_paths' => array(
-                        __DIR__ . '/../testing.config.php',
-                    ),
+                    'config_glob_paths' => array(),
                 ),
             )
         );
