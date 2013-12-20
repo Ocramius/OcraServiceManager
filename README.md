@@ -82,3 +82,7 @@ Any pull requests will be accepted only if:
  * Installing the module itself won't allow tracking the first service-manager events in
    your application. If you need to have that working, you will need to override the
    implementation of `Zend\Mvc\Application::init()`
+ * If you have an authorization module enabled, be aware that `OcraServiceManager` registers a new
+   controller `'OcraServiceManager\Controller\YumlController'` as well as a new route
+   `'ocra_service_manager_yuml'`. You will need to enable access to both these in development mode
+   in order to see the dependencies diagram.
