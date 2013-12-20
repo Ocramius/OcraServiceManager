@@ -51,16 +51,18 @@ to actually see something working.
 
 Following config keys are provided by default, but you can change them as you want. You can
 drop a file `ocra-service-manager.local.php` into your `config/autoload` directory to
-enable logging of your service manager instances:
+enable or disable logging of your service manager instances:
 
 ```php
 return array(
     'ocra_service_manager' => array(
-        // In DEV, you can turn this on to see dependencies in Zend Developer Tools
+        // Turn this on to disable dependencies view in Zend Developer Tools
         'logged_service_manager' => true,
     ),
 );
 ```
+
+Please note that logging is enabled by default
 
 ## Testing and Contributing
 
