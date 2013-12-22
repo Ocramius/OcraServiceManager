@@ -51,16 +51,18 @@ to actually see something working.
 
 Following config keys are provided by default, but you can change them as you want. You can
 drop a file `ocra-service-manager.local.php` into your `config/autoload` directory to
-enable logging of your service manager instances:
+enable or disable logging of your service manager instances:
 
 ```php
 return array(
     'ocra_service_manager' => array(
-        // In DEV, you can turn this on to see dependencies in Zend Developer Tools
+        // Turn this on to disable dependencies view in Zend Developer Tools
         'logged_service_manager' => true,
     ),
 );
 ```
+
+Please note that logging is enabled by default
 
 ## Testing and Contributing
 
@@ -80,3 +82,7 @@ Any pull requests will be accepted only if:
  * Installing the module itself won't allow tracking the first service-manager events in
    your application. If you need to have that working, you will need to override the
    implementation of `Zend\Mvc\Application::init()`
+ * If you have an authorization module enabled, be aware that `OcraServiceManager` registers a new
+   controller `'OcraServiceManager\Controller\YumlController'` as well as a new route
+   `'ocra_service_manager_yuml'`. You will need to enable access to both these in development mode
+   in order to see the dependencies diagram.
