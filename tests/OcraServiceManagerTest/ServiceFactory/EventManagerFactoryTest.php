@@ -40,9 +40,7 @@ class EventManagerFactoryTest extends PHPUnit_Framework_TestCase
         $listenerMock
             ->expects($this->once())
             ->method('attach')
-            ->with($this->callback(function ($eventManager) {
-                return $eventManager instanceof EventManagerInterface;
-            }));
+            ->with($this->isInstanceOf('Zend\EventManager\EventManagerInterface'));
         $serviceLocator
             ->expects($this->any())
             ->method('get')
