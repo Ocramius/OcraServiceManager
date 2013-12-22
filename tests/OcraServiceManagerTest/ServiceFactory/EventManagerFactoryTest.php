@@ -18,10 +18,8 @@
 
 namespace OcraServiceManagerTest\ServiceFactory;
 
-use Zend\ServiceManager\ServiceManager;
 use PHPUnit_Framework_TestCase;
 use OcraServiceManager\ServiceFactory\EventManagerFactory;
-use Zend\EventManager\EventManagerInterface;
 
 /**
  * @author  Marco Pivetta <ocramius@gmail.com>
