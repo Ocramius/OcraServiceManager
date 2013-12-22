@@ -38,14 +38,14 @@ class ServiceManagerEventTest extends \PHPUnit_Framework_TestCase
     {
         $locator  = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
         $instance = new stdClass();
-        $event    = new ServiceManagerEvent('testEventName', $locator, $instance, 'serviceName', 'servicename');
+        $event    = new ServiceManagerEvent('testEventName', $locator, $instance, 'serviceName', 'serviceName');
 
         $this->assertSame('testEventName', $event->getName());
         $this->assertSame($locator, $event->getServiceLocator());
         $this->assertSame('serviceName', $event->getRequestedName());
         $this->assertSame('serviceName', $event->getParam('requested_name'));
-        $this->assertSame('servicename', $event->getCanonicalName());
-        $this->assertSame('servicename', $event->getParam('canonical_name'));
+        $this->assertSame('serviceName', $event->getCanonicalName());
+        $this->assertSame('serviceName', $event->getParam('canonical_name'));
         $this->assertSame($instance, $event->getInstance());
         $this->assertSame($instance, $event->getParam('instance'));
 

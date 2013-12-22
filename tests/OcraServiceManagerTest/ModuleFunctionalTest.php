@@ -56,7 +56,7 @@ class ModuleFunctionalTest extends PHPUnit_Framework_TestCase
 
         /* @var $application \Zend\Mvc\Application */
         $application        = $serviceManager->get('Application');
-        /* @var $ocraServiceManager \OcraServiceManager\ServiceManager */
+        /* @var $ocraServiceManager \Zend\ServiceManager\ServiceManager */
         $ocraServiceManager = $serviceManager->get('ServiceManager');
 
         $this->assertInstanceOf(

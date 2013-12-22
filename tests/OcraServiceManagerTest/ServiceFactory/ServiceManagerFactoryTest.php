@@ -20,8 +20,6 @@ namespace OcraServiceManagerTest\ServiceFactory;
 
 use OcraServiceManager\ServiceFactory\ServiceManagerFactory;
 use UnexpectedValueException;
-use Zend\ServiceManager\ServiceManager;
-
 use PHPUnit_Framework_TestCase;
 
 /**
