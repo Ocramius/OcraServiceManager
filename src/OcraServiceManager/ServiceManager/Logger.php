@@ -262,10 +262,10 @@ class Logger implements ListenerAggregateInterface
      * Analyzes a provided trace, looking for the first instantiation requesting $serviceName
      *
      * @param array $tracedCallInfo the element of {@see self::tracedCalls}
-     *                       of which we're looking for a parent dependant service
+     *                              of which we're looking for a parent dependant service
      *
      * @return array|null null if a dependant service could not be found, the element
-     *                              in {@see self::tracedCalls} otherwise
+     *                    in {@see self::tracedCalls} otherwise
      */
     protected function getParentRequestingService($tracedCallInfo)
     {

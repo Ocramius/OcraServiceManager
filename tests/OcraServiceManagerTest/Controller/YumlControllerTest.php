@@ -20,7 +20,7 @@ namespace OcraServiceManagerTest\ServiceManager;
 
 use OcraServiceManager\Controller\YumlController;
 
-class YumlControlleTest extends \PHPUnit_Framework_TestCase
+class YumlControllerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var YumlController

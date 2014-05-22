@@ -41,7 +41,7 @@ class YumlController extends AbstractActionController
      *
      * @return \Zend\Http\Response
      * @throws \UnexpectedValueException if the YUML service answered incorrectly
-     * @throws BadMethodCallException   if the request has been aborted for security reasons
+     * @throws BadMethodCallException    if the request has been aborted for security reasons
      */
     public function indexAction()
     {
