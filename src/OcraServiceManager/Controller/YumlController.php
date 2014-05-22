@@ -87,7 +87,7 @@ class YumlController extends AbstractActionController
     public function getHttpClient()
     {
         if (!$this->httpClient) {
-            $this->httpClient = new Client('http://yuml.me/diagram/class/', array('timeout' => 30));
+            $this->httpClient = new Client('http://yuml.me/diagram/plain/class/', array('timeout' => 30));
         }
 
         return $this->httpClient;
