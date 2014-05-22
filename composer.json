@@ -33,6 +33,11 @@
             "OcraServiceManager\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-0": {
+            "OcraServiceManagerTest\\": "tests"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"
