@@ -34,6 +34,5 @@ if (! isset($loader)) {
 
 /* @var $loader \Composer\Autoload\ClassLoader */
 $loader->add('OcraServiceManagerTest\\', __DIR__);
-$loader->add('OcraServiceManagerTestAsset\\', __DIR__);
 
 unset($files, $file, $loader);
