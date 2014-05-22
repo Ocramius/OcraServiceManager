@@ -74,20 +74,14 @@ class ServiceManagerEvent extends Event
         $requestedName,
         $canonicalName
     ) {
-        $this->serviceLocator = $serviceLocator;
-        $this->instance       = $instance;
-        $this->requestedName  = (string) $requestedName;
-        $this->canonicalName  = (string) $canonicalName;
-        $this->trace          = debug_backtrace(true);
-
         parent::__construct(
             $eventName,
-            $serviceLocator,
+            $this->serviceLocator = $serviceLocator,
             array(
-                'instance'       => $instance,
-                'requested_name' => $requestedName,
-                'canonical_name' => $canonicalName,
-                'trace'          => $this->trace,
+                'instance'       => $this->instance      = $instance,
+                'requested_name' => $this->requestedName = $requestedName,
+                'canonical_name' => $this->canonicalName = $canonicalName,
+                'trace'          => $this->trace         = debug_backtrace(true),
             )
         );
     }

@@ -18,6 +18,7 @@
 
 namespace OcraServiceManager\Controller;
 
+use BadMethodCallException;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Http\Client;
 use Zend\Http\Request;
@@ -40,23 +41,23 @@ class YumlController extends AbstractActionController
      *
      * @return \Zend\Http\Response
      * @throws \UnexpectedValueException if the YUML service answered incorrectly
-     * @throws \BadMethodCallException   if the request has been aborted for security reasons
+     * @throws BadMethodCallException    if the request has been aborted for security reasons
      */
     public function indexAction()
     {
         $config = $this->getServiceLocator()->get('Config');
 
-        if (!isset($config['ocra_service_manager']['logged_service_manager'])
-            || !$config['ocra_service_manager']['logged_service_manager']
-            || !isset($config['zenddevelopertools']['toolbar']['enabled'])
-            || !$config['zenddevelopertools']['toolbar']['enabled']
+        if (! $config['ocra_service_manager']['logged_service_manager']
+            || ! isset($config['zenddevelopertools']['toolbar']['enabled'])
+            || ! $config['zenddevelopertools']['toolbar']['enabled']
         ) {
-            throw new \BadMethodCallException('Toolbar not enabled, aborting');
+            throw new BadMethodCallException('Toolbar not enabled, aborting');
         }
 
         /* @var $request \Zend\Http\Request */
         $request = $this->getRequest();
-        $client = $this->getHttpClient();
+        $client  = $this->getHttpClient();
+
         $client->setMethod(Request::METHOD_POST);
         $client->setParameterPost(array(
             'dsl_text' => $request->getPost('dsl_text'),

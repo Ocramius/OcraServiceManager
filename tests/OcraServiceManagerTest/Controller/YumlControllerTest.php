@@ -20,7 +20,7 @@ namespace OcraServiceManagerTest\ServiceManager;
 
 use OcraServiceManager\Controller\YumlController;
 
-class YumlControlleTest extends \PHPUnit_Framework_TestCase
+class YumlControllerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var YumlController
@@ -68,7 +68,11 @@ class YumlControlleTest extends \PHPUnit_Framework_TestCase
      */
     public function testIndexActionWillNotDispatchOnDisabledToolbar()
     {
-        $this->serviceLocator->expects($this->any())->method('get')->with('Config')->will($this->returnValue(array()));
+        $this->serviceLocator->expects($this->any())->method('get')->with('Config')->will($this->returnValue(array(
+            'ocra_service_manager' => array(
+                'logged_service_manager' => true,
+            ),
+        )));
 
         $this->setExpectedException('BadMethodCallException');
         $this->controller->indexAction();

@@ -19,6 +19,7 @@
 namespace OcraServiceManager\ServiceFactory;
 
 use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
+use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -42,9 +43,25 @@ class ServiceManagerAccessInterceptorsFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         /* @var $eventManager \Zend\EventManager\EventManagerInterface */
-        $eventManager = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
+        $eventManager     = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
+        $creationListener = $this->createInstantiationListener($eventManager);
 
-        $creationListener = function ($proxy, $instance, $method, $params, $returnValue) use ($eventManager) {
+        return array(
+            'create' => $creationListener,
+            'get'    => $creationListener,
+        );
+    }
+
+    /**
+     * Bulds a listener closure responsible for triggering events on service instantiation
+     *
+     * @param EventManagerInterface $eventManager
+     *
+     * @return \Closure
+     */
+    private function createInstantiationListener(EventManagerInterface $eventManager)
+    {
+        return function ($proxy, $instance, $method, $params, $returnValue) use ($eventManager) {
             $eventName = ('create' === $method)
                 ? ServiceManagerEvent::EVENT_SERVICEMANAGER_CREATE
                 : ServiceManagerEvent::EVENT_SERVICEMANAGER_GET;
@@ -59,20 +76,13 @@ class ServiceManagerAccessInterceptorsFactory implements FactoryInterface
                 );
             }
 
-            $eventManager->trigger(
-                new ServiceManagerEvent(
-                    $eventName,
-                    $proxy,
-                    $returnValue,
-                    $serviceName,
-                    $canonicalName
-                )
-            );
+            $eventManager->trigger(new ServiceManagerEvent(
+                $eventName,
+                $proxy,
+                $returnValue,
+                $serviceName,
+                $canonicalName
+            ));
         };
-
-        return array(
-            'create' => $creationListener,
-            'get'    => $creationListener,
-        );
     }
 }
