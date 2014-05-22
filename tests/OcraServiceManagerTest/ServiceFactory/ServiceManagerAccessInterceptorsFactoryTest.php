@@ -19,6 +19,8 @@
 namespace OcraServiceManagerTest\ServiceFactory;
 
 use OcraServiceManager\ServiceFactory\ServiceManagerAccessInterceptorsFactory;
+use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
+use stdClass;
 use Zend\ServiceManager\ServiceManager;
 
 use PHPUnit_Framework_TestCase;
@@ -51,7 +53,35 @@ class ServiceManagerAccessInterceptorsFactoryTest extends PHPUnit_Framework_Test
 
         $this->assertInstanceOf('Closure', $interceptors['get']);
         $this->assertSame($interceptors['get'], $interceptors['create']);
+    }
 
+    public function testInstantiatedCallback()
+    {
+        /* @var $locator \Zend\ServiceManager\ServiceLocatorInterface|\PHPUnit_Framework_MockObject_MockObject */
+        $locator      = $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface');
+        $eventManager = $this->getMock('Zend\\EventManager\\EventManagerInterface');
+        $service      = new stdClass();
+        $test         = $this;
+        $factory      = new ServiceManagerAccessInterceptorsFactory();
 
+        $locator->expects($this->any())->method('get')->will($this->returnValue($eventManager));
+
+        $interceptors = $factory->createService($locator);
+
+        $eventManager
+            ->expects($this->once())
+            ->method('trigger')
+            ->with($this->callback(function (ServiceManagerEvent $event) use ($test, $service, $locator) {
+                $test->assertSame($service, $event->getInstance());
+                $test->assertSame(ServiceManagerEvent::EVENT_SERVICEMANAGER_GET, $event->getName());
+                $test->assertSame('someservice', $event->getCanonicalName());
+                $test->assertSame('some\\Service', $event->getRequestedName());
+                $test->assertSame($locator, $event->getServiceLocator());
+                $test->assertInternalType('array', $event->getTrace());
+
+                return true;
+            }));
+
+        call_user_func($interceptors['get'], $locator, null, 'get', array('name' => 'some\\Service'), $service);
     }
 }
