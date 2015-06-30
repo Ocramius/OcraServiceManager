@@ -17,7 +17,7 @@
         "zendframework/zend-servicemanager":  "~2.2",
         "zendframework/zend-modulemanager":   "~2.2",
         "zendframework/zend-http":            "~2.2",
-        "ocramius/proxy-manager":             "0.5.*"
+        "ocramius/proxy-manager":             "1.0.*"
     },
     "require-dev": {
         "zendframework/zendframework":        "~2.2",
