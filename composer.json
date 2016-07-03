@@ -15,7 +15,7 @@
     "require": {
         "zendframework/zend-mvc":             "^3.0.2",
         "zendframework/zend-servicemanager":  "^3.1.0",
-        "zendframework/zend-modulemanager":   "~2.2",
+        "zendframework/zend-modulemanager":   "^2.7.2",
         "zendframework/zend-http":            "~2.2",
         "ocramius/proxy-manager":             "1.0.*"
     },
