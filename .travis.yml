@@ -6,6 +6,10 @@ php:
   - 7.0
   - 7.1
   - hhvm
+env:
+  matrix:
+    - DEPENDENCIES="high"
+    - DEPENDENCIES="low"
 
 matrix:
   allow_failures:
