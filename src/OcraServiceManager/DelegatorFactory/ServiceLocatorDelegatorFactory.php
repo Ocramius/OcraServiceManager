@@ -18,9 +18,10 @@
 
 namespace OcraServiceManager\DelegatorFactory;
 
+use Interop\Container\ContainerInterface;
 use ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory;
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use ProxyManager\Proxy\AccessInterceptorInterface;
+use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 
 /**
  * Factory responsible of building
@@ -56,16 +57,18 @@ class ServiceLocatorDelegatorFactory implements DelegatorFactoryInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return AccessInterceptorInterface|ContainerInterface
      */
-    public function createDelegatorWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName, $callback)
+    public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null)
     {
         $service = call_user_func($callback);
 
-        if (! $service instanceof ServiceLocatorInterface) {
+        if (! $service instanceof ContainerInterface) {
             return $service;
         }
 
         // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
-        return $this->proxyFactory->createProxy($service, array(), $this->locatorInterceptors);
+        return $this->proxyFactory->createProxy($service, [], $this->locatorInterceptors);
     }
 }
