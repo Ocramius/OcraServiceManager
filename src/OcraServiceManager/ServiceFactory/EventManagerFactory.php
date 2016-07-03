@@ -18,9 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Interop\Container\ContainerInterface;
 use Zend\EventManager\EventManager;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\EventManager\EventManagerInterface;
 
 /**
  * Factory responsible of building an {@see \Zend\EventManager\EventManagerInterface}
@@ -29,18 +29,20 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class EventManagerFactory implements FactoryInterface
+class EventManagerFactory
 {
     /**
-     * {@inheritDoc}
+     * @param ContainerInterface $container
+     *
+     * @return EventManagerInterface
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container)
     {
         /* @var $logger \OcraServiceManager\ServiceManager\Logger */
-        $logger       = $serviceLocator->get('OcraServiceManager\\ServiceManager\\Logger');
+        $logger       = $container->get('OcraServiceManager\\ServiceManager\\Logger');
         $eventManager = new EventManager();
 
-        $eventManager->attach($logger);
+        $logger->attach($logger);
 
         return $eventManager;
     }
