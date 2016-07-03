@@ -5,6 +5,7 @@ language: php
 php:
   - 7.0
   - 7.1
+  - nightly
   - hhvm
 
 env:
@@ -15,6 +16,7 @@ env:
 matrix:
   allow_failures:
     - php: hhvm
+    - php: nightly
 
 before_script:
   - composer self-update
