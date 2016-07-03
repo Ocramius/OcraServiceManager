@@ -35,7 +35,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 class Logger implements ListenerAggregateInterface
 {
     /**
-     * @var \Zend\Stdlib\CallbackHandler[]
+     * @var callable[]
      */
     protected $handlers = array();
 
@@ -49,15 +49,17 @@ class Logger implements ListenerAggregateInterface
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->handlers[] = $events->attach(
             ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
-            array($this, 'logServiceLocatorGet')
+            array($this, 'logServiceLocatorGet'),
+            $priority
         );
         $this->handlers[] = $events->attach(
             ServiceManagerEvent::EVENT_SERVICEMANAGER_GET,
-            array($this, 'logServiceManagerCreate')
+            array($this, 'logServiceManagerCreate'),
+            $priority
         );
     }
 
