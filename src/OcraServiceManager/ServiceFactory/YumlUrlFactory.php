@@ -20,8 +20,6 @@ namespace OcraServiceManager\ServiceFactory;
 
 use OcraServiceManager\View\Helper\YumlUrl;
 use Zend\Escaper\Escaper;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of building a {@see \OcraServiceManager\View\Helper\YumlUrl}
@@ -29,12 +27,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class YumlUrlFactory implements FactoryInterface
+class YumlUrlFactory
 {
     /**
-     * {@inheritDoc}
+     * @return YumlUrl
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke()
     {
         return new YumlUrl(new Escaper());
     }
