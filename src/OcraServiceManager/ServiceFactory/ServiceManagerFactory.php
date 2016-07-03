@@ -18,7 +18,7 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
-use Zend\ServiceManager\FactoryInterface;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceManager;
 
@@ -28,41 +28,41 @@ use Zend\ServiceManager\ServiceManager;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class ServiceManagerFactory implements FactoryInterface
+class ServiceManagerFactory
 {
     /**
      * Create an overloaded service manager
      *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @param  string|null             $name
+     * @param  ServiceLocatorInterface $container
+     *
      * @return ServiceLocatorInterface
      */
-    public function createService(ServiceLocatorInterface $serviceLocator, $name = null)
+    public function createService(ContainerInterface $container)
     {
-        $config = $serviceLocator->get('Config');
+        $config = $container->get('Config');
 
         if (! $config['ocra_service_manager']['logged_service_manager']) {
-            return $serviceLocator;
+            return $container;
         }
 
         /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
-        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        $proxyFactory = $container->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
         /* @var $locatorInterceptors \Closure[] */
-        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
+        $locatorInterceptors = $container->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
         // @todo maybe this should be a callback, and `locatorInterceptors` should not be used explicitly
-        $proxyLocator = $proxyFactory->createProxy($serviceLocator, array(), $locatorInterceptors);
+        $proxyLocator = $proxyFactory->createProxy($container, array(), $locatorInterceptors);
 
-        if (! ($name && $serviceLocator instanceof ServiceManager)) {
+        if (! $container instanceof ServiceManager) {
             return $proxyLocator;
         }
 
         // @todo this service hardcoding should be removed
-        $allowOverrides = $serviceLocator->getAllowOverride();
+        $allowOverrides = $container->getAllowOverride();
 
-        $serviceLocator->setAllowOverride(true);
-        $serviceLocator->setService('ServiceManager', $proxyLocator);
-        $serviceLocator->setAllowOverride($allowOverrides);
+        $container->setAllowOverride(true);
+        $container->setService('ServiceManager', $proxyLocator);
+        $container->setAllowOverride($allowOverrides);
 
         return $proxyLocator;
     }
