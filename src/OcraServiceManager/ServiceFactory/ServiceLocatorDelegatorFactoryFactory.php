@@ -18,23 +18,22 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Interop\Container\ContainerInterface;
 use OcraServiceManager\DelegatorFactory\ServiceLocatorDelegatorFactory;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ServiceLocatorDelegatorFactoryFactory implements FactoryInterface
+class ServiceLocatorDelegatorFactoryFactory
 {
     /**
-     * {@inheritDoc}
+     * @param ContainerInterface $container
      *
      * @return ServiceLocatorDelegatorFactory
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container)
     {
         /* @var $proxyFactory \ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory */
-        $proxyFactory = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
+        $proxyFactory = $container->get('OcraServiceManager\\ServiceManager\\AccessInterceptorProxyFactory');
         /* @var $locatorInterceptors \Closure[] */
-        $locatorInterceptors = $serviceLocator->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
+        $locatorInterceptors = $container->get('OcraServiceManager\\ServiceManager\\AccessInterceptors');
 
         return new ServiceLocatorDelegatorFactory($proxyFactory, $locatorInterceptors);
     }
