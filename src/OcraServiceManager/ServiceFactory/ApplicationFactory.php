@@ -18,9 +18,8 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Interop\Container\ContainerInterface;
 use Zend\Mvc\Application;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of building an application with the overloaded ServiceManager
@@ -28,7 +27,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class ApplicationFactory implements FactoryInterface
+class ApplicationFactory
 {
     /**
      * Create the Application service
@@ -36,14 +35,14 @@ class ApplicationFactory implements FactoryInterface
      * Creates a Zend\Mvc\Application service, passing it the configuration
      * service and the overloaded service manager instance.
      *
-     * @param  ServiceLocatorInterface $serviceLocator
+     * @param  ContainerInterface $container
      * @return Application
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container)
     {
         return new Application(
-            $serviceLocator->get('Config'),
-            $serviceLocator->get('OcraServiceManager\\ServiceManager')
+            $container->get('Config'),
+            $container->get('OcraServiceManager\\ServiceManager')
         );
     }
 }
