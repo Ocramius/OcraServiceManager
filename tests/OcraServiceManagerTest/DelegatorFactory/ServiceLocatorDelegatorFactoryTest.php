@@ -48,10 +48,9 @@ class ServiceLocatorDelegatorFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $proxyLocator,
-            $factory->createDelegatorWithName(
+            $factory->__invoke(
                 $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface'),
                 'fooBar',
-                'fooBaz',
                 function () use ($instance) {
                     return $instance;
                 }
@@ -71,10 +70,9 @@ class ServiceLocatorDelegatorFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $instance,
-            $factory->createDelegatorWithName(
+            $factory->__invoke(
                 $this->getMock('Zend\\ServiceManager\\ServiceLocatorInterface'),
                 'fooBar',
-                'fooBaz',
                 function () use ($instance) {
                     return $instance;
                 }
