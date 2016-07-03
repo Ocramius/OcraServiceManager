@@ -21,8 +21,6 @@ namespace OcraServiceManager\ServiceFactory;
 use ProxyManager\Configuration;
 use ProxyManager\Factory\AccessInterceptorScopeLocalizerFactory;
 use ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of building
@@ -34,14 +32,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class AccessInterceptorProxyFactoryFactory implements FactoryInterface
+class AccessInterceptorProxyFactoryFactory
 {
     /**
      * {@inheritDoc}
      *
      * @return AccessInterceptorScopeLocalizerFactory
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke()
     {
         $config = new Configuration();
 
