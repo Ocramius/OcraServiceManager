@@ -18,9 +18,8 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Interop\Container\ContainerInterface;
 use OcraServiceManager\ServiceManager\ZDTCollector;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of building a {@see \OcraServiceManager\ServiceManager\ZDTCollector}
@@ -28,15 +27,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class ZDTCollectorFactory implements FactoryInterface
+class ZDTCollectorFactory
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container)
     {
         /* @var $logger \OcraServiceManager\ServiceManager\Logger */
-        $logger = $serviceLocator->get('OcraServiceManager\\ServiceManager\\Logger');
+        $logger = $container->get('OcraServiceManager\\ServiceManager\\Logger');
 
         return new ZDTCollector($logger);
     }
