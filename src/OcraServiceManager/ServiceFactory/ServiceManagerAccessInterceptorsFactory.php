@@ -18,10 +18,9 @@
 
 namespace OcraServiceManager\ServiceFactory;
 
+use Interop\Container\ContainerInterface;
 use OcraServiceManager\ServiceManager\Event\ServiceManagerEvent;
 use Zend\EventManager\EventManagerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory responsible of instantiating an array of pre- and post-
@@ -31,19 +30,17 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @license MIT
  */
-class ServiceManagerAccessInterceptorsFactory implements FactoryInterface
+class ServiceManagerAccessInterceptorsFactory
 {
     /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $container
      *
      * @return \Closure[]
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container)
     {
         /* @var $eventManager \Zend\EventManager\EventManagerInterface */
-        $eventManager     = $serviceLocator->get('OcraServiceManager\\ServiceManager\\EventManager');
+        $eventManager     = $container->get('OcraServiceManager\\ServiceManager\\EventManager');
         $creationListener = $this->createInstantiationListener($eventManager);
 
         return array(
